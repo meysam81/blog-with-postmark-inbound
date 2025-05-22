@@ -13,7 +13,9 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 
 FROM gcr.io/distroless/base-debian12 AS final
 
-VOLUME /static
+ENV PORT=8000
+EXPOSE ${PORT}
+
 VOLUME /data
 
 ENV DATA_PATH=/data

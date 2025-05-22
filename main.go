@@ -119,6 +119,7 @@ func main() {
 		rootPath = dataPath
 	}
 	dbFilepath := filepath.Join(rootPath, "blog.db")
+	staticDir := filepath.Join(rootPath, "static")
 
 	var err error
 	db, err = sqlite.NewDB(ctx, dbFilepath)
@@ -152,7 +153,7 @@ func main() {
 
 	http.HandleFunc("/webhook", loggingMiddleware(webhookHandler))
 	http.HandleFunc("/", loggingMiddleware(indexHandler))
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
 
 	log.Println("Server started at :" + port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
