@@ -119,10 +119,16 @@ func main() {
 	}
 
 	if cfg.String(p.BASIC_AUTH_USERNAME) == "" {
-		cfg.Set(p.BASIC_AUTH_USERNAME, "postmark")
+		err = cfg.Set(p.BASIC_AUTH_USERNAME, "postmark")
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 	if cfg.String(p.BASIC_AUTH_PASSWORD) == "" {
-		cfg.Set(p.BASIC_AUTH_PASSWORD, "secret")
+		err = cfg.Set(p.BASIC_AUTH_PASSWORD, "secret")
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 
 	ctx := context.Background()
