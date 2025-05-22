@@ -89,6 +89,7 @@ jobs:
       tag_name: ${{ steps.release-please.outputs.tag_name }}
     permissions:
       contents: write
+      issues: write
       pull-requests: write
     steps:
       - id: release-please
