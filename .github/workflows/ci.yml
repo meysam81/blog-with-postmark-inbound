@@ -97,7 +97,7 @@ jobs:
         name: Release please
         uses: googleapis/release-please-action@v4
         with:
-          release-type: python
+          release-type: go
 
   build-prod:
     needs: release-please
