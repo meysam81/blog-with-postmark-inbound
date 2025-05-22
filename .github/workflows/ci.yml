@@ -43,22 +43,43 @@ jobs:
           echo "PATH=$INSTALL_DIR/hurl-$VERSION-x86_64-unknown-linux-gnu/bin:$PATH" >> "$GITHUB_ENV"
       - name: Install dependencies
         run: go mod tidy
-      - name: Run tests
+      - name: Build the server
         run: go build -o blog-with-postmark-inbound
       - name: Run server in background
         run: nohup ./blog-with-postmark-inbound serve > server.log 2>&1 &
-      - name: Wait for server to start
-        run: |
-          for _ in {1..10}; do
-            if curl -s http://localhost:8080/ | grep -q "OK"; then
-              echo "Server is up!"
-              break
-            fi
-            echo "Waiting for server to start..."
-            sleep 5
-          done
       - name: Run e2e tests
-        run: hurl e2e/*.hurl --test
+        run: hurl e2e/*.hurl --test --retry 20
+
+  build-dev:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Cache docker
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: |
+            /tmp/dockercache
+          key: docker-cache-${{ runner.os }}-${{ hashFiles('**/Dockerfile') }}
+          restore-keys: |
+            docker-cache-${{ runner.os }}-
+      - name: Build docker
+        uses: meysam81/build-docker@main
+        with:
+          cache-from: type=local,src=/tmp/dockercache
+          cache-to: type=local,dest=/tmp/dockercache
+          checkout: false
+          cosign: true
+          image-name: ghcr.io/${{ github.repository }}
+          image-extra-tags: |
+            ghcr.io/${{ github.repository }}:${{ github.run_id }}
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+          kubescape: true
 
   release-please:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
