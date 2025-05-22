@@ -47,6 +47,7 @@ var (
 	db               *sql.DB
 	templates        *template.Template
 	port             = "8000"
+	rootPath         = "."
 )
 
 func loggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -113,12 +114,23 @@ func main() {
 		port = p
 	}
 
+	dataPath, ok := os.LookupEnv("DATA_PATH")
+	if ok && dataPath != "" {
+		rootPath = dataPath
+	}
+	dbFilepath := filepath.Join(rootPath, "blog.db")
+
 	var err error
-	db, err = sqlite.NewDB(ctx, "blog.db")
+	db, err = sqlite.NewDB(ctx, dbFilepath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	defer func() {
+		err = db.Close()
+		if err != nil {
+			log.Printf("Error closing database: %v", err)
+		}
+	}()
 
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS posts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -131,7 +143,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	os.MkdirAll("static/attachments", 0755)
+	err = os.MkdirAll("static/attachments", 0755)
+	if err != nil {
+		log.Fatalf("Error creating attachments directory: %v", err)
+	}
 
 	templates = template.Must(template.ParseFiles("templates/index.html"))
 
@@ -233,7 +248,11 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error querying posts", http.StatusInternalServerError)
 		return
 	}
-	defer rows.Close()
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Printf("Error closing rows: %v", err)
+		}
+	}()
 
 	var posts []Post
 	for rows.Next() {

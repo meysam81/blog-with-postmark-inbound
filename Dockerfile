@@ -14,6 +14,9 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 FROM gcr.io/distroless/base-debian12 AS final
 
 VOLUME /static
+VOLUME /data
+
+ENV DATA_PATH=/data
 
 COPY templates /templates
 COPY --from=builder /app/blog-with-postmark-inbound /blog-with-postmark-inbound
