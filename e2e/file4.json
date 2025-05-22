@@ -1,0 +1,14 @@
+{
+  "Attachments": [
+    {
+      "Content": "0M8R4KGxGuEAAAAAAAAAAAAAAAAAAAAAPgADAP7/CQAGAAAAAAAAAAAAAAABAAAAAQAAAAAAAAAA",
+      "ContentID": "",
+      "ContentType": "application/msword",
+      "Name": "attachment.doc"
+    }
+  ],
+  "From": "user1@example.com",
+  "HtmlBody": "",
+  "Subject": "Plain Text Only 9274",
+  "TextBody": "This is a plain text post. Random: 83"
+}

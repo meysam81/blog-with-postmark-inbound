@@ -1,0 +1,126 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  checks:
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.24
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.1
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.24
+      - name: Install hurl
+        run: |
+          INSTALL_DIR=/tmp
+          VERSION=6.1.1
+          curl --silent --location https://github.com/Orange-OpenSource/hurl/releases/download/$VERSION/hurl-$VERSION-x86_64-unknown-linux-gnu.tar.gz | tar xvz -C "$INSTALL_DIR"
+          echo "PATH=$INSTALL_DIR/hurl-$VERSION-x86_64-unknown-linux-gnu/bin:$PATH" >> "$GITHUB_ENV"
+      - name: Install dependencies
+        run: go mod tidy
+      - name: Run tests
+        run: go build -o blog-with-postmark-inbound
+      - name: Run server in background
+        run: nohup ./blog-with-postmark-inbound serve > server.log 2>&1 &
+      - name: Wait for server to start
+        run: |
+          for _ in {1..10}; do
+            if curl -s http://localhost:8080/ | grep -q "OK"; then
+              echo "Server is up!"
+              break
+            fi
+            echo "Waiting for server to start..."
+            sleep 5
+          done
+      - name: Run e2e tests
+        run: hurl e2e/*.hurl --test
+
+  release-please:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release-please.outputs.releases_created }}
+      tag_name: ${{ steps.release-please.outputs.tag_name }}
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - id: release-please
+        name: Release please
+        uses: googleapis/release-please-action@v4
+        with:
+          release-type: python
+
+  build-prod:
+    needs: release-please
+    if: needs.release-please.outputs.releases_created == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Cache docker
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: |
+            /tmp/dockercache
+          key: docker-cache-${{ runner.os }}-${{ hashFiles('**/Dockerfile') }}
+          restore-keys: |
+            docker-cache-${{ runner.os }}-
+      - name: Install syft
+        uses: anchore/sbom-action/download-syft@v0
+      - name: Setup Cosign CLI
+        uses: sigstore/cosign-installer@v3
+      - name: Install goreleaser
+        run: |
+          echo 'deb [trusted=yes] https://repo.goreleaser.com/apt/ /' | sudo tee /etc/apt/sources.list.d/goreleaser.list
+          sudo apt update
+          sudo apt install -y goreleaser
+          goreleaser --version
+      - name: Build docker
+        uses: meysam81/build-docker@main
+        with:
+          cache-from: type=local,src=/tmp/dockercache
+          cache-to: type=local,dest=/tmp/dockercache
+          checkout: false
+          cosign: true
+          image-name: ghcr.io/${{ github.repository }}
+          image-extra-tags: ghcr.io/${{ github.repository }}:${{ needs.release-please.outputs.tag_name }}
+          kubescape: true
+          metadata-tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
