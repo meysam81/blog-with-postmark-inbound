@@ -2,6 +2,7 @@ FROM golang:1.24 AS builder
 
 WORKDIR /app
 
+ENV CGO_ENABLED=0
 
 COPY go.mod go.sum ./
 RUN --mount=type=cache,target=/go/pkg/mod \
@@ -11,7 +12,7 @@ COPY . .
 RUN --mount=type=cache,target=/go/pkg/mod \
   go build -ldflags="-s -w -extldflags '-static'" -trimpath -o tarzan
 
-FROM gcr.io/distroless/base-debian12 AS final
+FROM scratch AS final
 
 ENV PORT=8000
 EXPOSE ${PORT}
