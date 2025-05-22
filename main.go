@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -12,14 +11,15 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/meysam81/x/config"
-	"github.com/meysam81/x/sqlite"
+	"github.com/redis/go-redis/v9"
 
 	p "github.com/meysam81/tarzan/cmd/config"
+	"github.com/meysam81/x/config"
 )
 
 type InboundEmail struct {
@@ -47,7 +47,7 @@ type Post struct {
 
 var (
 	authorizedEmails = []string{"user1@example.com", "user3@example.com"}
-	db               *sql.DB
+	redisClient      *redis.Client
 	templates        *template.Template
 	port             = "8000"
 	rootPath         = "."
@@ -144,29 +144,28 @@ func main() {
 	if ok && dataPath != "" {
 		rootPath = dataPath
 	}
-	dbFilepath := filepath.Join(rootPath, "blog.db")
 	staticDir := filepath.Join(rootPath, "static")
 
-	db, err = sqlite.NewDB(ctx, dbFilepath)
-	if err != nil {
-		log.Fatal(err)
+	redisAddr := os.Getenv("REDIS_ADDR")
+	if redisAddr == "" {
+		redisAddr = "localhost:6379"
 	}
+	redisClient = redis.NewClient(&redis.Options{
+		Addr:       redisAddr,
+		ClientName: fmt.Sprintf("tarzan-%s", runtime.Version()),
+		Password:   "", // No password set
+		DB:         0,  // Default DB
+	})
 	defer func() {
-		err = db.Close()
-		if err != nil {
-			log.Printf("Error closing database: %v", err)
+		if err := redisClient.Close(); err != nil {
+			log.Printf("Error closing Redis client: %v", err)
 		}
 	}()
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS posts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
-        content TEXT,
-        author_email TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`)
+	// Check Redis connection
+	_, err = redisClient.Ping(ctx).Result()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error connecting to Redis: %v", err)
 	}
 
 	err = os.MkdirAll("static/attachments", 0755)
@@ -189,7 +188,6 @@ func main() {
 }
 
 func (a *appHandler) webhookHandler(w http.ResponseWriter, r *http.Request) {
-
 	username, password, ok := r.BasicAuth()
 	if !ok || username != a.c.String(p.BASIC_AUTH_USERNAME) || password != a.c.String(p.BASIC_AUTH_PASSWORD) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -199,7 +197,6 @@ func (a *appHandler) webhookHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error reading request body: %v", err)
-
 		return
 	}
 
@@ -231,7 +228,6 @@ func (a *appHandler) webhookHandler(w http.ResponseWriter, r *http.Request) {
 	contentIDMap := make(map[string]string)
 	for _, att := range email.Attachments {
 		if att.ContentID != "" {
-
 			data, err := base64.StdEncoding.DecodeString(att.Content)
 			if err != nil {
 				log.Printf("Error decoding attachment %s: %v", att.Name, err)
@@ -261,37 +257,64 @@ func (a *appHandler) webhookHandler(w http.ResponseWriter, r *http.Request) {
 		content = strings.ReplaceAll(content, "cid:"+contentID, url)
 	}
 
-	_, err = db.Exec("INSERT INTO posts (title, content, author_email) VALUES (?, ?, ?)",
-		email.Subject, content, email.From)
+	ctx := context.Background()
+	postID, err := redisClient.Incr(ctx, "post:counter").Result()
 	if err != nil {
+		log.Printf("Error incrementing post counter: %v", err)
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	postKey := fmt.Sprintf("post:%d", postID)
+	postData := map[string]interface{}{
+		"title":        email.Subject,
+		"content":      content,
+		"author_email": email.From,
+		"created_at":   time.Now().Format(time.RFC3339),
+	}
+
+	if err := redisClient.HSet(ctx, postKey, postData).Err(); err != nil {
 		log.Printf("Error inserting post: %v", err)
 		w.WriteHeader(http.StatusOK)
 		return
+	}
+
+	// Add post ID to a sorted set for ordering by creation time
+	if err := redisClient.ZAdd(ctx, "posts", redis.Z{
+		Score:  float64(time.Now().Unix()),
+		Member: postID,
+	}).Err(); err != nil {
+		log.Printf("Error adding post to sorted set: %v", err)
 	}
 
 	w.WriteHeader(http.StatusOK)
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT id, title, content, author_email, created_at FROM posts ORDER BY created_at DESC")
+	ctx := context.Background()
+	postIDs, err := redisClient.ZRevRange(ctx, "posts", 0, -1).Result()
 	if err != nil {
 		http.Error(w, "Error querying posts", http.StatusInternalServerError)
 		return
 	}
-	defer func() {
-		if err := rows.Close(); err != nil {
-			log.Printf("Error closing rows: %v", err)
-		}
-	}()
 
 	var posts []Post
-	for rows.Next() {
-		var p Post
-		if err := rows.Scan(&p.ID, &p.Title, &p.Content, &p.AuthorEmail, &p.CreatedAt); err != nil {
-			log.Printf("Error scanning post: %v", err)
+	for i, idStr := range postIDs {
+		postKey := fmt.Sprintf("post:%s", idStr)
+		postData, err := redisClient.HGetAll(ctx, postKey).Result()
+		if err != nil {
+			log.Printf("Error fetching post %s: %v", idStr, err)
 			continue
 		}
-		posts = append(posts, p)
+
+		post := Post{
+			ID:          i + 1,
+			Title:       postData["title"],
+			Content:     template.HTML(postData["content"]),
+			AuthorEmail: postData["author_email"],
+			CreatedAt:   postData["created_at"],
+		}
+		posts = append(posts, post)
 	}
 
 	if err := templates.ExecuteTemplate(w, "index.html", posts); err != nil {
