@@ -9,7 +9,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 
 COPY . .
 RUN --mount=type=cache,target=/go/pkg/mod \
-  go build -o blog-with-postmark-inbound
+  go build -ldflags="-s -w -extldflags '-static'" -trimpath -o tarzan
 
 FROM gcr.io/distroless/base-debian12 AS final
 
@@ -19,6 +19,6 @@ VOLUME /data
 ENV DATA_PATH=/data
 
 COPY templates /templates
-COPY --from=builder /app/blog-with-postmark-inbound /blog-with-postmark-inbound
+COPY --from=builder /app/tarzan /tarzan
 
-CMD ["/blog-with-postmark-inbound"]
+CMD ["/tarzan"]

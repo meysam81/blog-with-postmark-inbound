@@ -44,9 +44,9 @@ jobs:
       - name: Install dependencies
         run: go mod tidy
       - name: Build the server
-        run: go build -o blog-with-postmark-inbound
+        run: go build -o tarzan
       - name: Run server in background
-        run: nohup ./blog-with-postmark-inbound serve > server.log 2>&1 &
+        run: nohup ./tarzan > server.log 2>&1 &
       - name: Run e2e tests
         run: hurl e2e/*.hurl --test --retry 20
 

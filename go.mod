@@ -1,4 +1,4 @@
-module github.com/meysam81/blog-with-postmark-inbound
+module github.com/meysam81/tarzan
 
 go 1.24.2
 
