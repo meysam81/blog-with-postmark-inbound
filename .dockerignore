@@ -1,4 +1,5 @@
 *
 !*.go
 !go.*
+!cmd
 !templates

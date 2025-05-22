@@ -16,7 +16,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/meysam81/x/config"
 	"github.com/meysam81/x/sqlite"
+
+	p "github.com/meysam81/tarzan/cmd/config"
 )
 
 type InboundEmail struct {
@@ -49,6 +52,10 @@ var (
 	port             = "8000"
 	rootPath         = "."
 )
+
+type appHandler struct {
+	c *config.Config
+}
 
 func loggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -104,13 +111,26 @@ func (rw *responseWriter) WriteHeader(code int) {
 }
 
 func main() {
+	var err error
+
+	cfg, err := config.NewConfig()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if cfg.String(p.BASIC_AUTH_USERNAME) == "" {
+		cfg.Set(p.BASIC_AUTH_USERNAME, "postmark")
+	}
+	if cfg.String(p.BASIC_AUTH_PASSWORD) == "" {
+		cfg.Set(p.BASIC_AUTH_PASSWORD, "secret")
+	}
+
 	ctx := context.Background()
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.SetOutput(os.Stdout)
 
-	p, ok := os.LookupEnv("PORT")
-	if ok && p != "" {
+	if p := cfg.String(p.PORT); p != "" {
 		port = p
 	}
 
@@ -121,7 +141,6 @@ func main() {
 	dbFilepath := filepath.Join(rootPath, "blog.db")
 	staticDir := filepath.Join(rootPath, "static")
 
-	var err error
 	db, err = sqlite.NewDB(ctx, dbFilepath)
 	if err != nil {
 		log.Fatal(err)
@@ -151,7 +170,11 @@ func main() {
 
 	templates = template.Must(template.ParseFiles("templates/index.html"))
 
-	http.HandleFunc("/webhook", loggingMiddleware(webhookHandler))
+	app := &appHandler{
+		c: cfg,
+	}
+
+	http.HandleFunc("/webhook", loggingMiddleware(app.webhookHandler))
 	http.HandleFunc("/", loggingMiddleware(indexHandler))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
 
@@ -159,10 +182,10 @@ func main() {
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }
 
-func webhookHandler(w http.ResponseWriter, r *http.Request) {
+func (a *appHandler) webhookHandler(w http.ResponseWriter, r *http.Request) {
 
 	username, password, ok := r.BasicAuth()
-	if !ok || username != "postmark" || password != "secret" {
+	if !ok || username != a.c.String(p.BASIC_AUTH_USERNAME) || password != a.c.String(p.BASIC_AUTH_PASSWORD) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
