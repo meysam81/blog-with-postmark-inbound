@@ -1,34 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Email Blog</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tarzan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 40px;
+      a {
+        color: #4a5568;
+        text-decoration: none;
       }
-      .post {
-        margin-bottom: 20px;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 20px;
+      a:hover {
+        color: #2b6cb0;
+        text-decoration: underline;
       }
-      .post h2 {
-        margin: 0;
+
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
       }
-      .post-meta {
-        color: #666;
-        font-size: 0.9em;
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
     </style>
   </head>
-  <body>
-    <h1>Email-Powered Blog</h1>
-    {{range .}}
-    <div class="post">
-      <h2>{{.Title}}</h2>
-      <div>{{.Content}}</div>
-      <div class="post-meta">Posted by {{.AuthorEmail}} on {{.CreatedAt}}</div>
-    </div>
-    {{end}}
+  <body
+    class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300"
+  >
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-md py-6">
+      <div class="container mx-auto px-4 flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-green-600 dark:text-green-400">
+          Tarzan
+        </h1>
+      </div>
+      <p class="text-center text-gray-600 dark:text-gray-300 mt-2">
+        A space for stories, shared via email
+      </p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+      <div class="max-w-3xl mx-auto">
+        {{range .}}
+        <article
+          class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6 fade-in"
+        >
+          <h2
+            class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2"
+          >
+            {{.Title}}
+          </h2>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">{{.Content}}</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Posted by <span class="font-medium">{{.AuthorEmail}}</span> on
+            <time>{{.CreatedAt}}</time>
+          </p>
+        </article>
+        {{end}}
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 py-4 mt-auto">
+      <p class="text-center text-gray-600 dark:text-gray-300 text-sm">
+        © <a href="https://github.com/meysam81/tarzan">Tarzan</a>. All rights reserved.
+      </p>
+    </footer>
   </body>
 </html>

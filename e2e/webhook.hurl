@@ -1,28 +1,28 @@
-GET http://localhost:8000/
+GET {{base_url}}/
 HTTP 200
 
-POST http://localhost:8000/webhook
+POST {{base_url}}/webhook
 content-type: application/json
 [BasicAuth]
 postmark: secret
 file,file1.json;
 HTTP 200
 
-POST http://localhost:8000/webhook
+POST {{base_url}}/webhook
 content-type: application/json
 [BasicAuth]
 postmark: secret
 file,file2.json;
 HTTP 200
 
-POST http://localhost:8000/webhook
+POST {{base_url}}/webhook
 content-type: application/json
 [BasicAuth]
 postmark: secret
 file,file3.json;
 HTTP 200
 
-POST http://localhost:8000/webhook
+POST {{base_url}}/webhook
 content-type: application/json
 [BasicAuth]
 postmark: secret
