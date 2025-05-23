@@ -20,7 +20,7 @@ type cfg struct {
 	RedisPassword string `koanf:"redis.password"`
 	RedisSSL      bool   `koanf:"redis.ssl"`
 
-	RootPath string `koanf:"RootPath"`
+	RootPath string `koanf:"dir.root"`
 
 	// relative
 	DbPath               string `koanf:"dir.db"`
@@ -61,7 +61,7 @@ func NewConfig() (*Config, error) {
 		"redis.host":            "localhost",
 		"redis.port":            6379,
 		"redis.db":              0,
-		"RootPath":              ".",
+		"dir.root":              ".",
 		"dir.db":                "tarzan.db",
 		"dir.storage":           "storage",
 		"dir.frontend":          "./public",

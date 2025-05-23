@@ -1,5 +1,7 @@
 *
 !*.go
-!go.*
 !cmd
-!templates
+!deploy
+!go.*
+!gotpl
+!public

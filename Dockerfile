@@ -19,9 +19,11 @@ EXPOSE ${PORT}
 
 VOLUME /data
 
-ENV DATA_PATH=/data
+ENV DIR_ROOT=/data
 
-COPY templates /templates
+COPY gotpl /gotpl
+COPY public /public
+COPY deploy /deploy
 COPY --from=builder /app/tarzan /tarzan
 
 CMD ["/tarzan"]
