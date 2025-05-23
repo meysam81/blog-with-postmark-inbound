@@ -28,6 +28,43 @@
           transform: translateY(0);
         }
       }
+
+      .char-hover {
+        display: inline-block;
+        transition: all 0.3s ease;
+        position: relative;
+        cursor: pointer;
+        transform-style: preserve-3d;
+        perspective: 800px;
+      }
+
+      .char-hover:hover {
+        transform: scale(1.4) translateZ(20px);
+        background: radial-gradient(ellipse at center, #22c55e, #0ea5e9);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        text-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
+        font-weight: bold;
+      }
+
+      .char-hover:hover::before {
+        content: "";
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        right: -4px;
+        bottom: -4px;
+        border-radius: 50%;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(34, 197, 94, 0.2),
+          rgba(14, 165, 233, 0.2)
+        );
+        z-index: -1;
+        filter: blur(3px);
+        transform: translateZ(-5px);
+      }
     </style>
   </head>
   <body
@@ -40,8 +77,16 @@
           Tarzan
         </h1>
       </div>
-      <p class="text-center text-gray-600 dark:text-gray-300 mt-2">
-        A space for stories, shared via email
+      <p
+        id="titleText"
+        class="text-center text-gray-600 dark:text-gray-300 mt-2"
+      >
+        <!-- The title text will be injected here -->
+      </p>
+      <p
+        class="text-center text-gray-500 dark:text-gray-400 text-sm italic mt-1"
+      >
+        For Those Who Still Remember SMTP Commands
       </p>
     </header>
 
@@ -70,8 +115,36 @@
     <!-- Footer -->
     <footer class="bg-white dark:bg-gray-800 py-4 mt-auto">
       <p class="text-center text-gray-600 dark:text-gray-300 text-sm">
-        © <a href="https://github.com/meysam81/tarzan">Tarzan</a>. All rights reserved.
+        © <a href="https://github.com/meysam81/tarzan">Tarzan</a>. All rights
+        reserved.
       </p>
     </footer>
+
+    <script>
+      var titleElement = document.getElementById("titleText");
+      var titleText =
+        "Email-Powered Blogging for People Who Think GUIs Are Overrated";
+
+      function wrapCharsWithSpan() {
+        var wrappedTitle = "";
+
+        for (var i = 0; i < titleText.length; i++) {
+          var char = titleText[i];
+          if (char === " ") {
+            wrappedTitle += " ";
+          } else {
+            wrappedTitle += '<span class="char-hover">' + char + "</span>";
+          }
+        }
+
+        titleElement.innerHTML = wrappedTitle;
+      }
+
+      function handleDOMContentLoaded() {
+        wrapCharsWithSpan();
+      }
+
+      document.addEventListener("DOMContentLoaded", handleDOMContentLoaded);
+    </script>
   </body>
 </html>

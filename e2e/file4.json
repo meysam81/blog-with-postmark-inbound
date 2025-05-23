@@ -1,14 +1,20 @@
 {
   "Attachments": [
     {
-      "Content": "0M8R4KGxGuEAAAAAAAAAAAAAAAAAAAAAPgADAP7/CQAGAAAAAAAAAAAAAAABAAAAAQAAAAAAAAAA",
-      "ContentID": "",
-      "ContentType": "application/msword",
-      "Name": "attachment.doc"
+      "Content": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYGD4z8TAwMgABX4AAW8DK45W9jUAAAAASUVORK5CYII=",
+      "ContentID": "art1",
+      "ContentType": "image/png",
+      "Name": "art1.png"
+    },
+    {
+      "Content": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+      "ContentID": "art2",
+      "ContentType": "image/png",
+      "Name": "art2.png"
     }
   ],
-  "From": "user1@example.com",
-  "HtmlBody": "",
-  "Subject": "Plain Text Only 9274",
-  "TextBody": "This is a plain text post. Random: 83"
+  "From": "user3@example.com",
+  "HtmlBody": "<h1>My Artwork</h1><p>Here are two of my recent paintings:</p><img src='cid:art1'><img src='cid:art2'><p>Hope you like them!</p>",
+  "Subject": "Gallery of My Artwork",
+  "TextBody": "My Artwork\n\nHere are two of my recent paintings. Hope you like them!"
 }

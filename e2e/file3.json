@@ -1,26 +1,20 @@
 {
   "Attachments": [
     {
-      "Content": "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mP8z8AQmBhIAMZgYABeAAHPAAGvVfgzAAAAAElFTkSuQmCC",
-      "ContentID": "image1-550e8400-e29b-41d4-a716-446655440000",
+      "Content": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5/hPwAIAwAB/wAAAAABJRU5ErkJggg==",
+      "ContentID": "unauth-image",
       "ContentType": "image/png",
-      "Name": "img1.png"
+      "Name": "unauth.png"
     },
     {
-      "Content": "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mNk+M/AwMDIwMDAwAAFXwABbgEArgAAAABJRU5ErkJggg==",
-      "ContentID": "image2-6b86b273-ff34-4b9d-a9a0-6c0b4b1b7c3f",
-      "ContentType": "image/png",
-      "Name": "img2.png"
-    },
-    {
-      "Content": "JVBERi0xLjAKMSAwIG9iago8PC9UeXBlL0NhdGFsb2cvUGFnZXMgMiAwIFI+PgplbmRvYmoKMiAwIG9iago8PC9UeXBlL1BhZ2VzL0NvdW50IDEvS2lkcyBbMyAwIFJdPj4KZW5kb2JqCjMgMCBvYmoKPDwvVHlwZS9QYWdlL1BhcmVudCAyIDAgUi9SZXNvdXJjZXM8PC9Qcm9jU2V0Wy9QREYvVGV4dF0+Pi9NZWRpYUJveFsgMCAwIDYxMiA3OTJdL0NvbnRlbnRzIDQgMCBSPj4KZW5kb2JqCjQgMCBvYmoKPDwvTGVuZ3RoIDM0Pj4Kc3RyZWFtCkJULy9UIDEyIFRmIDEyIDAgMCAxMiA1MCA3NTAgVG0gKEhlbGxvLCBXb3JsZCEpIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDUKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDEwIDAwMDAwIG4gCjAwMDAwMDAwNjggMDAwMDAgbiAKMDAwMDAwMDEzNSAwMDAwMCBuIAowMDAwMDAwMjM3IDAwMDAwIG4gCnRyYWlsZXIKPDwvU2l6ZSA1L1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKMzU0CiUlRU9G",
+      "Content": "VGhpcyBpcyBhIHRlc3QgZmlsZS4=",
       "ContentID": "",
-      "ContentType": "application/pdf",
-      "Name": "irrelevant.pdf"
+      "ContentType": "text/plain",
+      "Name": "test.txt"
     }
   ],
-  "From": "user3@example.com",
-  "HtmlBody": "<p>Two images: <img src=\"cid:image1-550e8400-e29b-41d4-a716-446655440000\"> and <img src=\"cid:image2-6b86b273-ff34-4b9d-a9a0-6c0b4b1b7c3f\"></p><p>Value: 19</p>",
-  "Subject": "Multi-Image Post 6428",
-  "TextBody": "Two images and text. Value: 19"
+  "From": "unauthorized@example.com",
+  "HtmlBody": "<p>This post should not be accepted.</p><img src='cid:unauth-image'>",
+  "Subject": "Unauthorized Post Attempt",
+  "TextBody": "This post should not be accepted."
 }

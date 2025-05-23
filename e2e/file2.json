@@ -1,14 +1,7 @@
 {
-  "Attachments": [
-    {
-      "Content": "iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mNkYGD4z8TAwMgABX4AAW8DK45W9jUAAAAASUVORK5CYII=",
-      "ContentID": "image-123e4567-e89b-12d3-a456-426614174000",
-      "ContentType": "image/png",
-      "Name": "photo.png"
-    }
-  ],
-  "From": "user1@example.com",
-  "HtmlBody": "<p>Welcome to my blog! Here\u2019s an image: <img src=\"cid:image-123e4567-e89b-12d3-a456-426614174000\"></p><p>Random: 42</p>",
-  "Subject": "First Test Post 4721",
-  "TextBody": "Welcome to my blog! Random: 42"
+  "Attachments": [],
+  "From": "user2@example.com",
+  "HtmlBody": "<h1>Delicious Chocolate Cake</h1><p>Ingredients:</p><ul><li>2 cups flour</li><li>1 cup sugar</li><li>1/2 cup cocoa powder</li></ul><p>Mix all ingredients and bake at 350\u00b0F for 30 minutes.</p>",
+  "Subject": "Recipe: Delicious Chocolate Cake",
+  "TextBody": "Delicious Chocolate Cake\n\nIngredients:\n- 2 cups flour\n- 1 cup sugar\n- 1/2 cup cocoa powder\n\nMix all ingredients and bake at 350\u00b0F for 30 minutes."
 }

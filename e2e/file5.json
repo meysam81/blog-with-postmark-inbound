@@ -1,0 +1,14 @@
+{
+  "Attachments": [
+    {
+      "Content": "0M8R4KGxGuEAAAAAAAAAAAAAAAAAAAAAPgADAP7/CQAGAAAAAAAAAAAAAAABAAAAAQAAAAAAAAAA",
+      "ContentID": "",
+      "ContentType": "application/msword",
+      "Name": "update.doc"
+    }
+  ],
+  "From": "user1@example.com",
+  "HtmlBody": "",
+  "Subject": "Quick Update",
+  "TextBody": "Just a quick update: the project is going well. More details soon."
+}
