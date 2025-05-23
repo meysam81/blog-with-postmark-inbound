@@ -48,7 +48,7 @@ jobs:
       - name: Run server in background
         run: nohup ./tarzan > server.log 2>&1 &
       - name: Run e2e tests
-        run: hurl e2e/*.hurl --test --retry 20 --variables-file e2e/local.vars
+        run: hurl e2e/*.hurl --test --retry 20 --variables-file e2e/ci.vars
 
   build-dev:
     runs-on: ubuntu-latest

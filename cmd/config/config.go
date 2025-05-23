@@ -51,10 +51,8 @@ func NewConfig() (*Config, error) {
 		return nil, err
 	}
 
-	k := c.Koanf()
-
 	// default configs if none is proivded from the upstream
-	k.Load(confmap.Provider(map[string]interface{}{
+	err = c.Koanf().Load(confmap.Provider(map[string]interface{}{
 		"port":                  8000,
 		"auth.username":         "postmarkapp",
 		"auth.password":         "Secr3t!",
@@ -67,13 +65,19 @@ func NewConfig() (*Config, error) {
 		"dir.frontend":          "./public",
 		"dir.authorized-emails": "deploy/authorized-emails.json",
 	}, "."), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	var settings cfg
 
 	// now load the ones coming from env vars
-	c.LoadConfig()
+	err = c.LoadConfig()
+	if err != nil {
+		return nil, err
+	}
 
-	err = k.UnmarshalWithConf("", &settings, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true})
+	err = c.Koanf().UnmarshalWithConf("", &settings, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true})
 	if err != nil {
 		return nil, err
 	}
