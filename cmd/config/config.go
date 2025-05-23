@@ -1,8 +1,6 @@
 package config
 
 import (
-	"path/filepath"
-
 	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/v2"
 	"github.com/meysam81/x/config"
@@ -20,27 +18,10 @@ type cfg struct {
 	RedisPassword string `koanf:"redis.password"`
 	RedisSSL      bool   `koanf:"redis.ssl"`
 
-	RootPath string `koanf:"dir.root"`
-
-	// relative
 	DbPath               string `koanf:"dir.db"`
 	StoragePath          string `koanf:"dir.storage"`
 	AuthorizedEmailsPath string `koanf:"dir.authorized-emails"`
-
-	// absolute
-	FrontendPath string `koanf:"dir.frontend"`
-}
-
-func (c *cfg) GetDBPath() string {
-	return filepath.Join(c.RootPath, c.DbPath)
-}
-
-func (c *cfg) GetStoragePath() string {
-	return filepath.Join(c.RootPath, c.StoragePath)
-}
-
-func (c *cfg) GetAuthorizedEmailsPath() string {
-	return filepath.Join(c.RootPath, c.AuthorizedEmailsPath)
+	FrontendPath         string `koanf:"dir.frontend"`
 }
 
 type Config = cfg

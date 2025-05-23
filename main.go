@@ -56,7 +56,7 @@ type appHandler struct {
 }
 
 func (a *appHandler) getAttachmentPath() string {
-	return filepath.Join(a.cfg.RootPath, a.cfg.GetStoragePath(), "attachments")
+	return filepath.Join(a.cfg.StoragePath, "attachments")
 }
 
 func main() {
@@ -71,7 +71,7 @@ func main() {
 
 	ctxT, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
-	db, err := sqlite.NewDB(ctxT, cfg.GetDBPath(), sqlite.WithJournalMode(""), sqlite.WithMode(""))
+	db, err := sqlite.NewDB(ctxT, cfg.DbPath, sqlite.WithJournalMode(""), sqlite.WithMode(""))
 	if err != nil {
 		log.Fatalln("Error opening db:", err)
 	}
@@ -116,10 +116,10 @@ func main() {
 
 	templates = template.Must(template.New("tarzan").Funcs(funcMap).ParseFiles("gotpl/index.html"))
 
-	if _, err := os.Stat(app.cfg.GetAuthorizedEmailsPath()); os.IsNotExist(err) {
+	if _, err := os.Stat(app.cfg.AuthorizedEmailsPath); os.IsNotExist(err) {
 		log.Fatalln("Missing authorized email filepath:", err)
 	}
-	content, err := os.ReadFile(app.cfg.GetAuthorizedEmailsPath())
+	content, err := os.ReadFile(app.cfg.AuthorizedEmailsPath)
 	if err != nil {
 		log.Fatalln("Failed reading authorized emails", err)
 	}
@@ -131,7 +131,7 @@ func main() {
 	http.HandleFunc("/", httputils.LoggingMiddleware(app.indexHandler))
 	http.HandleFunc("/webhook", httputils.LoggingMiddleware(app.webhookHandler))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(app.cfg.FrontendPath))))
-	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(app.cfg.GetStoragePath()))))
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(app.cfg.StoragePath))))
 
 	log.Println("Server started at:", app.cfg.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", app.cfg.Port), nil))
