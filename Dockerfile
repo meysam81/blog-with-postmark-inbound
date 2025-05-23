@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 FROM scratch AS final
 
 ENV PORT=8000
-EXPOSE ${PORT}
+EXPOSE 8000/tcp
 
 VOLUME /data
 
