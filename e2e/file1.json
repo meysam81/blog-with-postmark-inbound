@@ -7,7 +7,7 @@
       "Name": "mountain.png"
     }
   ],
-  "From": "user1@example.com",
+  "From": "meysam@developer-friendly.blog",
   "HtmlBody": "<h1>My Trip to the Mountains</h1><p>Last weekend, I went hiking in the mountains. It was amazing!</p><img src='cid:mountain-image'><p>The view was breathtaking.</p>",
   "Subject": "My Trip to the Mountains",
   "TextBody": "My Trip to the Mountains\n\nLast weekend, I went hiking in the mountains. It was amazing! The view was breathtaking."

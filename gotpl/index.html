@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tarzan - Email-Powered Blogging Platform</title>
+    <meta
+      name="description"
+      content="Publish your blog posts directly via email. Tarzan is a minimalist blogging platform for developers who prefer the command line over fancy interfaces."
+    />
+    <meta
+      name="keywords"
+      content="email blogging, developer blog, SMTP, minimalist blog platform"
+    />
+    <meta property="og:title" content="Tarzan - Email-Powered Blogging" />
+    <meta
+      property="og:description"
+      content="The blogging platform for developers who think GUIs are overrated. Publish directly via email."
+    />
+    <link rel="icon" type="image/png" href="/static/favicon.png" />
+    <link rel="apple-touch-icon" href="/static/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tarzan.meysam.io" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com" async defer></script>
+    <script>
+      function setupTailwindConfig() {
+        tailwind.config = {
+          theme: {
+            extend: {
+              fontFamily: {
+                sans: ["Inter", "sans-serif"],
+                display: ['"Playfair Display"', "serif"],
+              },
+              colors: {
+                primary: {
+                  50: "#ecfdf5",
+                  100: "#d1fae5",
+                  200: "#a7f3d0",
+                  300: "#6ee7b7",
+                  400: "#34d399",
+                  500: "#10b981",
+                  600: "#059669",
+                  700: "#047857",
+                  800: "#065f46",
+                  900: "#064e3b",
+                },
+                secondary: {
+                  50: "#eff6ff",
+                  100: "#dbeafe",
+                  200: "#bfdbfe",
+                  300: "#93c5fd",
+                  400: "#60a5fa",
+                  500: "#3b82f6",
+                  600: "#2563eb",
+                  700: "#1d4ed8",
+                  800: "#1e40af",
+                  900: "#1e3a8a",
+                },
+              },
+            },
+          },
+        };
+      }
+      document.addEventListener("DOMContentLoaded", setupTailwindConfig);
+    </script>
+    <style>
+      a {
+        color: #4a5568;
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+      a:hover {
+        color: #059669;
+        text-decoration: underline;
+      }
+
+      .focus-outline:focus-visible {
+        outline: 2px solid #10b981;
+        outline-offset: 2px;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .char-hover {
+        display: inline-block;
+        transition: all 0.3s ease;
+        position: relative;
+        cursor: pointer;
+        transform-style: preserve-3d;
+        perspective: 800px;
+      }
+
+      .char-hover:hover {
+        transform: scale(1.4) translateZ(20px);
+        background: radial-gradient(ellipse at center, #10b981, #3b82f6);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        text-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
+        font-weight: bold;
+      }
+
+      .char-hover:hover::before {
+        content: "";
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        right: -4px;
+        bottom: -4px;
+        border-radius: 50%;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(16, 185, 129, 0.2),
+          rgba(59, 130, 246, 0.2)
+        );
+        z-index: -1;
+        filter: blur(3px);
+        transform: translateZ(-5px);
+      }
+
+      .publish-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        z-index: 40;
+      }
+
+      .publish-btn:hover {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 7px 14px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .publish-btn:focus-visible {
+        outline: 3px solid #10b981;
+        outline-offset: 2px;
+      }
+
+      .publish-info-panel {
+        position: fixed;
+        bottom: 5.5rem;
+        right: 2rem;
+        width: 24rem;
+        max-width: calc(100vw - 4rem);
+        transform-origin: bottom right;
+        opacity: 0;
+        transform: scale(0.95);
+        pointer-events: none;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 30;
+      }
+
+      .publish-info-panel.active {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+      }
+
+      .step-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        font-weight: bold;
+      }
+
+      .blog-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .blog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .fade-in,
+        .char-hover,
+        .publish-btn,
+        .publish-info-panel,
+        .blog-card {
+          animation: none;
+          transition: none;
+        }
+        .char-hover:hover {
+          transform: none;
+        }
+      }
+
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #10b981;
+        color: white;
+        padding: 8px;
+        z-index: 100;
+        transition: top 0.3s ease;
+      }
+
+      .skip-link:focus {
+        top: 0;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300 font-sans"
+  >
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-md py-6">
+      <div class="container mx-auto px-4 flex justify-between items-center">
+        <h1
+          class="text-3xl font-bold font-display text-primary-600 dark:text-primary-400 block"
+        >
+          <a class="no-underline" href="/">Tarzan</a>
+        </h1>
+        <div class="flex items-center space-x-4">
+          <a
+            href="https://github.com/meysam81/tarzan"
+            class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 focus-outline rounded p-1"
+            aria-label="View on GitHub"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div
+        id="titleText"
+        class="text-center text-gray-700 dark:text-gray-200 mt-4 text-2xl font-medium px-4"
+      >
+        <!-- The title text will be injected here -->
+      </div>
+      <p
+        class="text-center text-gray-600 dark:text-gray-400 text-lg mt-2 italic font-light px-4"
+      >
+        For Those Who Still Remember SMTP Commands
+      </p>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="container mx-auto px-4 py-10 flex-grow">
+      <div class="max-w-4xl mx-auto">
+        {{if .}}
+        <div class="grid gap-8">
+          {{range .}}
+          <article
+            class="blog-card bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 fade-in border-l-4 border-primary-500"
+          >
+            <h2
+              class="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-3 font-display"
+            >
+              {{.Title}}
+            </h2>
+            <div class="prose prose-green dark:prose-invert max-w-none my-4">
+              {{.Content}}
+            </div>
+            <div
+              class="flex items-center mt-6 pt-4 border-t border-gray-100 dark:border-gray-700"
+            >
+              <div
+                class="bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full h-10 w-10 flex items-center justify-center font-medium"
+              >
+                {{index .AuthorEmail 0}}
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-gray-700 dark:text-gray-300 font-medium">
+                  {{.AuthorEmail}}
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  <time datetime="{{.CreatedAt | formatISODate}}"
+                    >{{.CreatedAt | formatReadableDate}}</time
+                  >
+                </p>
+              </div>
+            </div>
+          </article>
+          {{end}}
+        </div>
+        {{else}}
+        <div class="text-center py-16 px-4">
+          <svg
+            class="w-16 h-16 mx-auto text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+            ></path>
+          </svg>
+          <h2
+            class="mt-4 text-2xl font-semibold text-gray-700 dark:text-gray-300"
+          >
+            No posts yet
+          </h2>
+          <p class="mt-2 text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+            Be the first to publish something amazing! Check out the publishing
+            instructions below.
+          </p>
+        </div>
+        {{end}}
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="bg-white dark:bg-gray-800 py-8 mt-auto border-t border-gray-200 dark:border-gray-700"
+    >
+      <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="mb-4 md:mb-0">
+            <p
+              class="text-primary-600 dark:text-primary-400 font-semibold text-lg"
+            >
+              Tarzan
+            </p>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">
+              Email-powered blogging for People Who Think GUIs Are Overrated
+            </p>
+            <p class="text-gray-500 dark:text-gray-400 text-xs mt-2">
+              Because Real Geeks Send Blog Posts via Postfix
+            </p>
+          </div>
+          <div class="flex flex-col space-y-2 text-center md:text-right">
+            <a
+              href="https://github.com/meysam81/tarzan/blob/main/LICENSE"
+              class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 focus-outline rounded"
+              >Apache 2.0 License</a
+            >
+          </div>
+        </div>
+        <div
+          class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-6 text-center"
+        >
+          <p class="text-gray-500 dark:text-gray-400 text-sm">
+            © <span id="current-year"></span>
+            <a
+              href="https://github.com/meysam81"
+              class="text-primary-600 dark:text-primary-400 hover:underline focus-outline rounded"
+              >Meysam Azad</a
+            >. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Publish info button and panel -->
+    <button
+      id="publishBtn"
+      class="publish-btn bg-gradient-to-br from-primary-500 to-secondary-600 hover:from-primary-600 hover:to-secondary-700 text-white font-bold py-3 px-6 rounded-full flex items-center gap-2"
+      aria-haspopup="true"
+      aria-expanded="false"
+      aria-controls="publishInfoPanel"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+          clip-rule="evenodd"
+        />
+      </svg>
+      Share Your Story
+    </button>
+
+    <div
+      id="publishInfoPanel"
+      class="publish-info-panel bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 border border-gray-200 dark:border-gray-700"
+      aria-hidden="true"
+      role="dialog"
+      aria-labelledby="publishInfoTitle"
+    >
+      <h3
+        id="publishInfoTitle"
+        class="text-xl font-bold text-gray-900 dark:text-white mb-5 font-display"
+      >
+        Publish Your Story in Two Simple Steps
+      </h3>
+
+      <div class="space-y-6">
+        <div class="flex gap-4">
+          <div
+            class="step-number bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300"
+            aria-hidden="true"
+          >
+            1
+          </div>
+          <div>
+            <h4
+              class="font-semibold text-gray-800 dark:text-gray-200 mb-2 text-lg"
+            >
+              Get authorized as a contributor
+            </h4>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
+              Open a quick pull request to join our writing community:
+            </p>
+            <a
+              href="https://github.com/meysam81/tarzan/pulls/new?quick_pull=1"
+              class="inline-flex items-center gap-2 text-sm bg-gray-100 dark:bg-gray-700 py-2 px-4 rounded-md text-primary-700 dark:text-primary-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors focus-outline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+              Submit Authorization Request
+            </a>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div
+            class="step-number bg-secondary-100 dark:bg-secondary-900 text-secondary-700 dark:text-secondary-300"
+            aria-hidden="true"
+          >
+            2
+          </div>
+          <div>
+            <h4
+              class="font-semibold text-gray-800 dark:text-gray-200 mb-2 text-lg"
+            >
+              Write and send your post by email
+            </h4>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
+              Once approved, compose your post and send it to:
+            </p>
+            <div
+              class="bg-gray-100 dark:bg-gray-700 py-3 px-4 rounded-md flex justify-between items-center"
+            >
+              <code
+                class="text-sm text-secondary-700 dark:text-secondary-300 font-medium"
+                >blog@tarzan.meysam.io</code
+              >
+              <button
+                id="copyEmailBtn"
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus-outline rounded p-1"
+                title="Copy email address"
+                aria-label="Copy email address to clipboard"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                  <path
+                    d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div
+              class="mt-3 p-3 bg-primary-50 dark:bg-gray-900 rounded-md border border-primary-100 dark:border-gray-700"
+            >
+              <p
+                class="text-gray-700 dark:text-gray-300 text-sm mb-2 font-medium"
+              >
+                Email Format:
+              </p>
+              <ul
+                class="text-gray-600 dark:text-gray-400 text-sm space-y-2 ml-5 list-disc"
+              >
+                <li>
+                  <span class="font-medium">Subject:</span> Your post title
+                </li>
+                <li>
+                  <span class="font-medium">Body:</span> Your post content
+                  (markdown supported)
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button
+        id="closePublishInfoBtn"
+        class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 focus-outline rounded"
+        aria-label="Close publishing information"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
+    <script>
+      function wrapCharsWithSpan() {
+        var titleElement = document.getElementById("titleText");
+        var titleText = "Transforming Your Emails into Blogs!";
+        var wrappedTitle = "";
+
+        for (var i = 0; i < titleText.length; i++) {
+          var char = titleText[i];
+          if (char === " ") {
+            wrappedTitle += " ";
+          } else {
+            wrappedTitle +=
+              '<span class="char-hover" aria-hidden="true">' + char + "</span>";
+          }
+        }
+
+        titleElement.innerHTML = wrappedTitle;
+
+        // Add the hidden text for screen readers
+        var srText = document.createElement("span");
+        srText.className = "sr-only";
+        srText.textContent = titleText;
+        titleElement.appendChild(srText);
+      }
+
+      function setupYearInFooter() {
+        var yearElement = document.getElementById("current-year");
+        yearElement.textContent = new Date().getFullYear();
+      }
+
+      function setupPublishInfo() {
+        var publishBtn = document.getElementById("publishBtn");
+        var publishInfoPanel = document.getElementById("publishInfoPanel");
+        var closePublishInfoBtn = document.getElementById(
+          "closePublishInfoBtn"
+        );
+        var copyEmailBtn = document.getElementById("copyEmailBtn");
+        var emailToCopy = "blog@tarzan.meysam.io";
+
+        function togglePublishInfo() {
+          var isExpanded = publishInfoPanel.classList.contains("active");
+          publishInfoPanel.classList.toggle("active");
+          publishBtn.setAttribute("aria-expanded", !isExpanded);
+          publishInfoPanel.setAttribute("aria-hidden", isExpanded);
+        }
+
+        function closePublishInfo() {
+          publishInfoPanel.classList.remove("active");
+          publishBtn.setAttribute("aria-expanded", "false");
+          publishInfoPanel.setAttribute("aria-hidden", "true");
+        }
+
+        function copyEmailToClipboard() {
+          navigator.clipboard.writeText(emailToCopy).then(function () {
+            var originalTitle = copyEmailBtn.getAttribute("title");
+            copyEmailBtn.setAttribute("title", "Copied!");
+
+            // Show visual feedback
+            copyEmailBtn.innerHTML =
+              '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>';
+
+            setTimeout(function () {
+              copyEmailBtn.setAttribute("title", originalTitle);
+              copyEmailBtn.innerHTML =
+                '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>';
+            }, 2000);
+
+            // Announce to screen readers
+            var announcement = document.createElement("div");
+            announcement.setAttribute("aria-live", "polite");
+            announcement.className = "sr-only";
+            announcement.textContent = "Email address copied to clipboard";
+            document.body.appendChild(announcement);
+
+            setTimeout(function () {
+              document.body.removeChild(announcement);
+            }, 3000);
+          });
+        }
+
+        publishBtn.addEventListener("click", togglePublishInfo);
+        closePublishInfoBtn.addEventListener("click", closePublishInfo);
+        copyEmailBtn.addEventListener("click", copyEmailToClipboard);
+
+        // Close when clicking outside
+        document.addEventListener("click", function (event) {
+          var isClickInside =
+            publishInfoPanel.contains(event.target) ||
+            publishBtn.contains(event.target);
+          if (!isClickInside && publishInfoPanel.classList.contains("active")) {
+            closePublishInfo();
+          }
+        });
+
+        // Handle escape key
+        document.addEventListener("keydown", function (event) {
+          if (
+            event.key === "Escape" &&
+            publishInfoPanel.classList.contains("active")
+          ) {
+            closePublishInfo();
+          }
+        });
+      }
+
+      function handleDOMContentLoaded() {
+        wrapCharsWithSpan();
+        setupPublishInfo();
+        setupYearInFooter();
+      }
+
+      document.addEventListener("DOMContentLoaded", handleDOMContentLoaded);
+    </script>
+  </body>
+</html>

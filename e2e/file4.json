@@ -13,7 +13,7 @@
       "Name": "art2.png"
     }
   ],
-  "From": "user3@example.com",
+  "From": "meysam@developer-friendly.blog",
   "HtmlBody": "<h1>My Artwork</h1><p>Here are two of my recent paintings:</p><img src='cid:art1'><img src='cid:art2'><p>Hope you like them!</p>",
   "Subject": "Gallery of My Artwork",
   "TextBody": "My Artwork\n\nHere are two of my recent paintings. Hope you like them!"

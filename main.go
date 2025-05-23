@@ -16,10 +16,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/meysam81/x/config"
+	"github.com/meysam81/x/httputils"
 	"github.com/meysam81/x/sqlite"
 
-	p "github.com/meysam81/tarzan/cmd/config"
+	"github.com/meysam81/tarzan/cmd/config"
 )
 
 type InboundEmail struct {
@@ -46,111 +46,41 @@ type Post struct {
 }
 
 var (
-	authorizedEmails = []string{"user1@example.com", "user3@example.com"}
-	db               *sql.DB
-	templates        *template.Template
-	port             = "8000"
-	rootPath         = "."
+	templates *template.Template
 )
 
 type appHandler struct {
-	c *config.Config
+	cfg              *config.Config
+	authorizedEmails []string
+	db               *sql.DB
 }
 
-func loggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		startTime := time.Now()
-
-		rw := newResponseWriter(w)
-
-		var reqHeaders []string
-		for name, values := range r.Header {
-			if strings.EqualFold(name, "Authorization") {
-				continue
-			}
-			for _, value := range values {
-				reqHeaders = append(reqHeaders, fmt.Sprintf("%s: %s", name, value))
-			}
-		}
-
-		next(rw, r)
-
-		var respHeaders []string
-		for name, values := range rw.Header() {
-			for _, value := range values {
-				respHeaders = append(respHeaders, fmt.Sprintf("%s: %s", name, value))
-			}
-		}
-
-		duration := time.Since(startTime)
-		log.Printf(
-			"%s %s %s %v %v - %d - %v",
-			r.RemoteAddr,
-			r.Method,
-			r.URL.Path,
-			strings.Join(reqHeaders, ", "),
-			strings.Join(respHeaders, ", "),
-			rw.statusCode,
-			duration,
-		)
-	}
-}
-
-type responseWriter struct {
-	http.ResponseWriter
-	statusCode int
-}
-
-func newResponseWriter(w http.ResponseWriter) *responseWriter {
-	return &responseWriter{w, http.StatusOK}
-}
-
-func (rw *responseWriter) WriteHeader(code int) {
-	rw.statusCode = code
-	rw.ResponseWriter.WriteHeader(code)
+func (a *appHandler) getAttachmentPath() string {
+	return filepath.Join(a.cfg.RootPath, a.cfg.GetStoragePath(), "attachments")
 }
 
 func main() {
-	var err error
+	ctx := context.Background()
 
 	cfg, err := config.NewConfig()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	if cfg.String(p.BASIC_AUTH_USERNAME) == "" {
-		err = cfg.Set(p.BASIC_AUTH_USERNAME, "postmark")
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}
-	if cfg.String(p.BASIC_AUTH_PASSWORD) == "" {
-		err = cfg.Set(p.BASIC_AUTH_PASSWORD, "secret")
-		if err != nil {
-			log.Fatalln(err)
-		}
+	authorizedEmails := []string{}
+
+	ctxT, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+	db, err := sqlite.NewDB(ctxT, cfg.GetDBPath(), sqlite.WithJournalMode(""), sqlite.WithMode(""))
+	if err != nil {
+		log.Fatalln("Error opening db:", err)
 	}
 
-	ctx := context.Background()
+	app := appHandler{cfg, authorizedEmails, db}
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.SetOutput(os.Stdout)
 
-	if p := cfg.String(p.PORT); p != "" {
-		port = p
-	}
-
-	dataPath, ok := os.LookupEnv("DATA_PATH")
-	if ok && dataPath != "" {
-		rootPath = dataPath
-	}
-	dbFilepath := filepath.Join(rootPath, "blog.db")
-	staticDir := filepath.Join(rootPath, "static")
-
-	db, err = sqlite.NewDB(ctx, dbFilepath)
-	if err != nil {
-		log.Fatal(err)
-	}
 	defer func() {
 		err = db.Close()
 		if err != nil {
@@ -169,49 +99,68 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = os.MkdirAll("static/attachments", 0755)
+	err = os.MkdirAll(app.getAttachmentPath(), 0755)
 	if err != nil {
 		log.Fatalf("Error creating attachments directory: %v", err)
 	}
 
-	templates = template.Must(template.ParseFiles("templates/index.html"))
-
-	app := &appHandler{
-		c: cfg,
+	funcMap := template.FuncMap{
+		"upper": strings.ToUpper,
+		"formatISODate": func(t string) string {
+			return t
+		},
+		"formatReadableDate": func(t string) string {
+			return t
+		},
 	}
 
-	http.HandleFunc("/webhook", loggingMiddleware(app.webhookHandler))
-	http.HandleFunc("/", loggingMiddleware(indexHandler))
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
+	templates = template.Must(template.New("tarzan").Funcs(funcMap).ParseFiles("gotpl/index.html"))
 
-	log.Println("Server started at :" + port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
+	if _, err := os.Stat(app.cfg.GetAuthorizedEmailsPath()); os.IsNotExist(err) {
+		log.Fatalln("Missing authorized email filepath:", err)
+	}
+	content, err := os.ReadFile(app.cfg.GetAuthorizedEmailsPath())
+	if err != nil {
+		log.Fatalln("Failed reading authorized emails", err)
+	}
+	err = json.Unmarshal(content, &app.authorizedEmails)
+	if err != nil {
+		log.Fatalln("Error reading authorized emails file:", err)
+	}
+
+	http.HandleFunc("/", httputils.LoggingMiddleware(app.indexHandler))
+	http.HandleFunc("/webhook", httputils.LoggingMiddleware(app.webhookHandler))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(app.cfg.FrontendPath))))
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(app.cfg.GetStoragePath()))))
+
+	log.Println("Server started at:", app.cfg.Port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", app.cfg.Port), nil))
 }
 
 func (a *appHandler) webhookHandler(w http.ResponseWriter, r *http.Request) {
 
 	username, password, ok := r.BasicAuth()
-	if !ok || username != a.c.String(p.BASIC_AUTH_USERNAME) || password != a.c.String(p.BASIC_AUTH_PASSWORD) {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+	if !ok || username != a.cfg.AuthUsername || password != a.cfg.AuthPassword {
+		http.Error(w, "Unauthorized!", http.StatusUnauthorized)
 		return
 	}
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error reading request body: %v", err)
-
+		http.Error(w, "Invalid request body provided", http.StatusBadRequest)
 		return
 	}
 
 	var email InboundEmail
 	if err := json.Unmarshal(body, &email); err != nil {
 		log.Printf("Error parsing JSON: %v", err)
-		w.WriteHeader(http.StatusOK)
+		http.Error(w, "Invalid json format in body", http.StatusBadRequest)
 		return
 	}
 
 	authorized := false
-	for _, authEmail := range authorizedEmails {
+	for _, authEmail := range a.authorizedEmails {
 		if email.From == authEmail {
 			authorized = true
 			break
@@ -246,14 +195,15 @@ func (a *appHandler) webhookHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			filename := uuid.New().String() + ext
-			filepath := filepath.Join("static", "attachments", filename)
+			filepath := filepath.Join(a.getAttachmentPath(), filename)
 
 			if err := os.WriteFile(filepath, data, 0644); err != nil {
 				log.Printf("Error saving attachment %s: %v", att.Name, err)
+				http.Error(w, "Error occurred while saving your attachments", http.StatusBadRequest)
 				continue
 			}
 
-			contentIDMap[att.ContentID] = "/static/attachments/" + filename
+			contentIDMap[att.ContentID] = "/assets/attachments/" + filename
 		}
 	}
 
@@ -261,19 +211,38 @@ func (a *appHandler) webhookHandler(w http.ResponseWriter, r *http.Request) {
 		content = strings.ReplaceAll(content, "cid:"+contentID, url)
 	}
 
-	_, err = db.Exec("INSERT INTO posts (title, content, author_email) VALUES (?, ?, ?)",
+	_, err = a.db.Exec("INSERT INTO posts (title, content, author_email) VALUES (?, ?, ?)",
 		email.Subject, content, email.From)
 	if err != nil {
 		log.Printf("Error inserting post: %v", err)
-		w.WriteHeader(http.StatusOK)
+		http.Error(w, "Error saving your post to the database", http.StatusBadRequest)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT id, title, content, author_email, created_at FROM posts ORDER BY created_at DESC")
+func maskEmail(p *Post) {
+	at := strings.Index(p.AuthorEmail, "@")
+	if at <= 1 {
+		p.AuthorEmail = "***"
+		return
+	}
+	name := p.AuthorEmail[:at]
+	domain := p.AuthorEmail[at:]
+	if len(name) <= 2 {
+		p.AuthorEmail = string(name[0]) + "*" + domain
+		return
+	}
+	p.AuthorEmail = string(name[0]) + strings.Repeat("*", len(name)-2) + string(name[len(name)-1]) + domain
+}
+
+func (a *appHandler) indexHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := context.Background()
+
+	ctxT, cancelT := context.WithTimeout(ctx, 3*time.Second)
+	defer cancelT()
+	rows, err := a.db.QueryContext(ctxT, "SELECT id, title, content, author_email, created_at FROM posts ORDER BY created_at DESC")
 	if err != nil {
 		http.Error(w, "Error querying posts", http.StatusInternalServerError)
 		return
@@ -291,6 +260,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Error scanning post: %v", err)
 			continue
 		}
+		maskEmail(&p)
 		posts = append(posts, p)
 	}
 
