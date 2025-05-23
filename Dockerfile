@@ -19,7 +19,8 @@ EXPOSE ${PORT}
 
 VOLUME /data
 
-ENV DIR_ROOT=/data
+ENV DIR_DB=/data/tarzan.db \
+    DIR_STORAGE=/data/storage
 
 COPY gotpl /gotpl
 COPY public /public

@@ -40,10 +40,9 @@ func NewConfig() (*Config, error) {
 		"redis.host":            "localhost",
 		"redis.port":            6379,
 		"redis.db":              0,
-		"dir.root":              ".",
 		"dir.db":                "tarzan.db",
 		"dir.storage":           "storage",
-		"dir.frontend":          "./public",
+		"dir.frontend":          "public",
 		"dir.authorized-emails": "deploy/authorized-emails.json",
 	}, "."), nil)
 	if err != nil {
