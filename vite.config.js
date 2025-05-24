@@ -11,6 +11,7 @@ export default defineConfig(function configureVite({ mode }) {
       minify: true,
     },
     server: {
+      host: "::",
       port: env.PORT || 8080,
       proxy: {
         "/api": "http://localhost:8000",
