@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /
+Sitemap: https://tarzan.meysam.io/sitemap.xml
