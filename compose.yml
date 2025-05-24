@@ -1,0 +1,12 @@
+services:
+  tarzan:
+    build: .
+    image: ghcr.io/meysam81/tarzan
+    volumes:
+      - data:/data
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+volumes:
+  data:

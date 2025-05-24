@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.7",
+    "loglevel": "^1.9.2",
+    "tailwindcss": "^4.1.7"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "vite-plugin-minify": "^2.1.0"
+  },
+  "name": "tarzan",
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "start": "vite"
+  },
+  "type": "module"
+}

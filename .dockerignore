@@ -1,7 +1,12 @@
 *
 !*.go
+!*.js
+!bun.lock
 !cmd
 !deploy
 !go.*
-!gotpl
+!index.html
+!LICENSE
 !public
+!package*.json
+!src

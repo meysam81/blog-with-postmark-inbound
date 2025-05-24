@@ -32,3 +32,6 @@ tmp
 tarzan
 .envrc
 storage/
+node_modules/
+dist
+.vite

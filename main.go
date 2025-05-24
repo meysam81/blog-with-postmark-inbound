@@ -6,8 +6,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"io"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -38,16 +38,12 @@ type Attachment struct {
 }
 
 type Post struct {
-	ID          int
-	Title       string
-	Content     template.HTML
-	AuthorEmail string
-	CreatedAt   string
+	ID          int    `json:"id"`
+	Title       string `json:"title"`
+	Content     string `json:"content"`
+	AuthorEmail string `json:"author-email"`
+	CreatedAt   string `json:"created-at"`
 }
-
-var (
-	templates *template.Template
-)
 
 type appHandler struct {
 	cfg              *config.Config
@@ -104,18 +100,6 @@ func main() {
 		log.Fatalf("Error creating attachments directory: %v", err)
 	}
 
-	funcMap := template.FuncMap{
-		"upper": strings.ToUpper,
-		"formatISODate": func(t string) string {
-			return t
-		},
-		"formatReadableDate": func(t string) string {
-			return t
-		},
-	}
-
-	templates = template.Must(template.New("tarzan").Funcs(funcMap).ParseFiles("gotpl/index.html"))
-
 	if _, err := os.Stat(app.cfg.AuthorizedEmailsPath); os.IsNotExist(err) {
 		log.Fatalln("Missing authorized email filepath:", err)
 	}
@@ -128,10 +112,14 @@ func main() {
 		log.Fatalln("Error reading authorized emails file:", err)
 	}
 
-	http.HandleFunc("/", httputils.LoggingMiddleware(app.indexHandler))
+	http.HandleFunc("/api/posts", httputils.LoggingMiddleware(app.listPosts))
 	http.HandleFunc("/webhook", httputils.LoggingMiddleware(app.webhookHandler))
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(app.cfg.FrontendPath))))
-	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(app.cfg.StoragePath))))
+	http.Handle("/api/assets/", http.StripPrefix("/api/assets/", http.FileServer(http.Dir(app.cfg.StoragePath))))
+	distFS, err := fs.Sub(frontend, "dist")
+	if err != nil {
+		log.Fatal("Error creating subdirectory filesystem:", err)
+	}
+	http.Handle("/", http.FileServer(http.FS(distFS)))
 
 	log.Println("Server started at:", app.cfg.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", app.cfg.Port), nil))
@@ -203,7 +191,7 @@ func (a *appHandler) webhookHandler(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
-			contentIDMap[att.ContentID] = "/assets/attachments/" + filename
+			contentIDMap[att.ContentID] = "/api/assets/attachments/" + filename
 		}
 	}
 
@@ -237,7 +225,7 @@ func maskEmail(p *Post) {
 	p.AuthorEmail = string(name[0]) + strings.Repeat("*", len(name)-2) + string(name[len(name)-1]) + domain
 }
 
-func (a *appHandler) indexHandler(w http.ResponseWriter, r *http.Request) {
+func (a *appHandler) listPosts(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
 	ctxT, cancelT := context.WithTimeout(ctx, 3*time.Second)
@@ -264,7 +252,16 @@ func (a *appHandler) indexHandler(w http.ResponseWriter, r *http.Request) {
 		posts = append(posts, p)
 	}
 
-	if err := templates.ExecuteTemplate(w, "index.html", posts); err != nil {
-		http.Error(w, "Error rendering template", http.StatusInternalServerError)
+	response, err := json.Marshal(&posts)
+	if err != nil {
+		log.Println("Failed marshaling to json:", err)
+		http.Error(w, "Failed responding to request", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("content-type", "application/json")
+	_, err = w.Write(response)
+	if err != nil {
+		log.Println("Failed writing to response writer:", err)
 	}
 }

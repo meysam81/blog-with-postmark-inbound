@@ -27,7 +27,7 @@ type cfg struct {
 type Config = cfg
 
 func NewConfig() (*Config, error) {
-	c, err := config.NewConfig()
+	c, err := config.NewConfig(config.WithEnvPrefix("TARZAN_"))
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func NewConfig() (*Config, error) {
 	var settings cfg
 
 	// now load the ones coming from env vars
-	err = c.LoadConfig()
+	err = c.Build()
 	if err != nil {
 		return nil, err
 	}
