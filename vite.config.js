@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import { ViteMinifyPlugin } from "vite-plugin-minify";
 import tailwindcss from "@tailwindcss/vite";
+import vue from "@vitejs/plugin-vue";
 import path from "path";
 
 export default defineConfig(function configureVite({ mode }) {
@@ -20,6 +21,6 @@ export default defineConfig(function configureVite({ mode }) {
         "@": path.resolve(__dirname, "./src"),
       },
     },
-    plugins: [tailwindcss(), ViteMinifyPlugin({})],
+    plugins: [vue(), tailwindcss(), ViteMinifyPlugin({})],
   };
 });
