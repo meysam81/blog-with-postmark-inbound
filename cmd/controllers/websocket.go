@@ -3,6 +3,7 @@ package controllers
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -16,13 +17,50 @@ func (a *AppState) Websocket(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
+	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+	conn.SetPongHandler(func(string) error {
+		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		return nil
+	})
+
+	pingTicker := time.NewTicker(30 * time.Second)
+	defer pingTicker.Stop()
+
+	done := make(chan struct{})
+
+	go func() {
+		defer close(done)
+		for {
+			_, _, err := conn.ReadMessage()
+			if err != nil {
+				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+					log.Printf("WebSocket error: %v", err)
+				}
+				return
+			}
+		}
+	}()
+
 	for {
 		select {
+		case <-done:
+			return
+		case <-pingTicker.C:
+			conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+			if err := conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				log.Println("Ping error:", err)
+				return
+			}
 		case _ = <-*a.Signal:
 			log.Println("Notification received!")
+			conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
 			err := conn.WriteMessage(websocket.TextMessage, []byte("New post available"))
 			if err != nil {
-				log.Println("Write error:", err)
+				if websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+					log.Println("Client disconnected:", err)
+				} else {
+					log.Println("Write error:", err)
+				}
 				return
 			}
 		}

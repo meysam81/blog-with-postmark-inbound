@@ -145,6 +145,10 @@ export default {
     var errorMessage = ref('')
     var retryCount = ref(0)
     var maxRetries = 3
+    var websocket = ref(null)
+    var reconnectTimeout = ref(null)
+    var reconnectAttempts = ref(0)
+    var maxReconnectAttempts = 5
 
     var { isOnline } = useNetworkStatus()
 
@@ -158,7 +162,7 @@ export default {
         var fetchedPosts = await fetchPosts()
 
         posts.value = fetchedPosts
-        retryCount.value = 0 // Reset retry count on success
+        retryCount.value = 0
         log.info(`Successfully loaded ${fetchedPosts.length} posts`)
 
       } catch (error) {
@@ -167,10 +171,9 @@ export default {
         errorMessage.value = error.message || 'Failed to load posts. Please try again.'
         posts.value = []
 
-        // Auto-retry with exponential backoff
         if (retryCount.value < maxRetries) {
           retryCount.value++
-          var delay = 2 ** retryCount.value * 1000 // 2s, 4s, 8s
+          var delay = 2 ** retryCount.value * 1000
           log.info(`Retrying in ${delay}ms (attempt ${retryCount.value}/${maxRetries})`)
 
           setTimeout(function retryLoadPosts() {
@@ -184,15 +187,81 @@ export default {
       }
     }
 
-    function setupWebsocket() {
-      var ws = new WebSocket('ws://localhost:8000/ws');
-      ws.onmessage = async function wsOnMessage(event) {
-        log.error("WebSocket message received:", event.data);
-        await loadPosts();
-      };
-      ws.onclose = function wsOnClose() {
-        log.warn('WebSocket connection closed, retrying in 5 seconds...');
-      };
+    function connectWebSocket() {
+      if (websocket.value && websocket.value.readyState === WebSocket.OPEN) {
+        log.debug('WebSocket already connected')
+        return
+      }
+
+      try {
+        log.debug('Attempting to connect WebSocket...')
+        websocket.value = new WebSocket('ws://localhost:8000/ws')
+
+        websocket.value.onopen = function wsOnOpen() {
+          log.info('WebSocket connection established')
+          reconnectAttempts.value = 0
+        }
+
+        websocket.value.onmessage = async function wsOnMessage(event) {
+          if (event.data === 'ping') {
+            websocket.value.send('pong')
+            return
+          }
+          log.info("WebSocket message received:", event.data)
+          await loadPosts()
+        }
+
+        websocket.value.onclose = function wsOnClose(event) {
+          log.warn('WebSocket connection closed:', event.code, event.reason)
+          websocket.value = null
+          if (event.code !== 1000) {
+            scheduleReconnect()
+          }
+        }
+
+        websocket.value.onerror = function wsOnError(error) {
+          log.error('WebSocket error:', error)
+          if (websocket.value) {
+            websocket.value.close()
+          }
+        }
+
+      } catch (error) {
+        log.error('Failed to create WebSocket connection:', error)
+        scheduleReconnect()
+      }
+    }
+
+    function scheduleReconnect() {
+      if (reconnectAttempts.value >= maxReconnectAttempts) {
+        log.error('Max WebSocket reconnection attempts exceeded')
+        return
+      }
+
+      if (reconnectTimeout.value) {
+        clearTimeout(reconnectTimeout.value)
+      }
+
+      reconnectAttempts.value++
+      var delay = Math.min(1000 * Math.pow(2, reconnectAttempts.value), 30000)
+
+      log.info(`Scheduling WebSocket reconnection in ${delay}ms (attempt ${reconnectAttempts.value}/${maxReconnectAttempts})`)
+
+      reconnectTimeout.value = setTimeout(function reconnectWebSocket() {
+        connectWebSocket()
+      }, delay)
+    }
+
+    function closeWebSocket() {
+      if (reconnectTimeout.value) {
+        clearTimeout(reconnectTimeout.value)
+        reconnectTimeout.value = null
+      }
+
+      if (websocket.value) {
+        websocket.value.close()
+        websocket.value = null
+      }
     }
 
     function retryLoadPosts() {
@@ -245,8 +314,13 @@ export default {
 
     onMounted(function onMountedHandler() {
       log.warn("Mounting the main content...")
-      setupWebsocket()
+      connectWebSocket()
       loadPosts()
+    })
+
+    onUnmounted(function onUnmountedHandler() {
+      log.debug("Unmounting main content, cleaning up WebSocket...")
+      closeWebSocket()
     })
 
     return {
