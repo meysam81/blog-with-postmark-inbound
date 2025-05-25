@@ -26,10 +26,10 @@ func (a *AppState) Websocket(w http.ResponseWriter, r *http.Request) {
 	pingTicker := time.NewTicker(30 * time.Second)
 	defer pingTicker.Stop()
 
-	done := make(chan struct{})
+	done := make(chan bool, 1)
 
 	go func() {
-		defer close(done)
+		defer func() { done <- true }()
 		for {
 			_, _, err := conn.ReadMessage()
 			if err != nil {
@@ -51,7 +51,7 @@ func (a *AppState) Websocket(w http.ResponseWriter, r *http.Request) {
 				log.Println("Ping error:", err)
 				return
 			}
-		case _ = <-*a.Signal:
+		case <-*a.Signal:
 			log.Println("Notification received!")
 			conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
 			err := conn.WriteMessage(websocket.TextMessage, []byte("New post available"))
