@@ -3,42 +3,48 @@
 <div align="center">
 
 <!-- Project Status & Quality Badges -->
+
 [![CI/CD Pipeline](https://github.com/meysam81/tarzan/actions/workflows/ci.yml/badge.svg)](https://github.com/meysam81/tarzan/actions/workflows/ci.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/meysam81/tarzan)](https://goreportcard.com/report/github.com/meysam81/tarzan)
 [![Vulnerability Scan](https://img.shields.io/badge/🛡️_Zero_Vulnerabilities-Kubescape_Verified-brightgreen?style=flat-square)](https://github.com/meysam81/tarzan/actions)
 
 <!-- Release & Distribution -->
+
 [![Latest Release](https://img.shields.io/github/v/release/meysam81/tarzan?style=flat-square&logo=github&color=blue)](https://github.com/meysam81/tarzan/releases/latest)
 [![Docker Image](https://img.shields.io/badge/docker-ghcr.io%2Fmeysam81%2Ftarzan-blue?style=flat-square&logo=docker)](https://ghcr.io/meysam81/tarzan)
 [![Docker Pulls](https://img.shields.io/docker/pulls/meysam81/tarzan?style=flat-square&logo=docker)](https://ghcr.io/meysam81/tarzan)
 [![Container Security](https://img.shields.io/badge/🔐_Container-Cosign_Signed-green?style=flat-square)](https://github.com/meysam81/tarzan/actions)
 
 <!-- License & Community -->
+
 [![License](https://img.shields.io/badge/License-Apache_2.0-green.svg?style=flat-square&logo=apache)](LICENSE)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/meysam81?style=flat-square&logo=github&color=pink)](https://github.com/sponsors/meysam81)
 [![Contributors](https://img.shields.io/github/contributors/meysam81/tarzan?style=flat-square&logo=github)](https://github.com/meysam81/tarzan/graphs/contributors)
 [![Community Chat](https://img.shields.io/badge/💬_Chat-Zulip-brightgreen?style=flat-square)](https://developer-friendly.zulipchat.com/)
 
 <!-- Technical Stack -->
+
 [![Go Version](https://img.shields.io/github/go-mod/go-version/meysam81/tarzan?style=flat-square&logo=go)](go.mod)
 [![Vue.js](https://img.shields.io/badge/Frontend-Vue.js_3-4FC08D?style=flat-square&logo=vue.js)](https://vuejs.org/)
 [![TailwindCSS](https://img.shields.io/badge/Styling-TailwindCSS-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite-003B57?style=flat-square&logo=sqlite)](https://sqlite.org/)
 
 <!-- Code Quality & Tools -->
+
 [![oxlint](https://img.shields.io/badge/Linting-oxlint-FF6B6B?style=flat-square&logo=eslint)](https://oxc-project.github.io/docs/guide/usage/linter.html)
 [![Pre-commit](https://img.shields.io/badge/Quality-pre--commit_hooks-FAB040?style=flat-square&logo=pre-commit)](https://pre-commit.com/)
 [![12-Factor App](https://img.shields.io/badge/Architecture-12--Factor_App-blueviolet?style=flat-square)](https://12factor.net/)
 [![PWA Ready](https://img.shields.io/badge/📱_PWA-Ready-purple?style=flat-square)](https://web.dev/progressive-web-apps/)
 
 <!-- Features & Capabilities -->
+
 [![Email Powered](https://img.shields.io/badge/✉️_Email--Powered-Revolutionary-ff6b35?style=flat-square)](https://postmarkapp.com/inbound-email)
 [![Self Hosted](https://img.shields.io/badge/🏠_Self--Hosted-Zero_Dependencies-success?style=flat-square)](docs/email-setup.md)
 [![Air Gap Ready](https://img.shields.io/badge/🔒_Air--Gap-Compatible-darkgreen?style=flat-square)](#deployment-excellence)
 [![RSS & Sitemap](https://img.shields.io/badge/📡_RSS_&_Sitemap-Native_Support-orange?style=flat-square)](#technical-superiority)
 
-
 <!-- Demo & Documentation -->
+
 [![Demo](https://img.shields.io/badge/🚀_Live_Demo-tarzan.meysam.io-blue?style=for-the-badge)](https://tarzan.meysam.io)
 
 </div>
@@ -64,6 +70,7 @@ Tarzan revolutionizes content creation by turning every email you send into a be
   - [Docker Compose (Recommended)](#docker-compose-recommended)
   - [Docker](#docker)
   - [Binary Download](#binary-download)
+  - [Kubernetes](#kubernetes)
 - [⚙️ Configuration](#-configuration)
 - [📧 Email Integration](#-email-integration)
 - [🎨 Customization](#-customization)
@@ -168,6 +175,32 @@ curl -L https://github.com/meysam81/tarzan/releases/latest/download/tarzan_linux
 # Windows
 # Download from GitHub releases page
 ```
+
+### Kubernetes Deployment (Enterprise Ready)
+
+Tarzan includes official Kubernetes deployment manifests that are security-hardened for production environments:
+
+```yaml
+# tarzan/kustomization.yml
+resources:
+  - https://github.com/meysam81/tarzan//deploy/k8s?ref=v1.0.0&timeout=2m
+
+namespace: default
+```
+
+And then apply this resource:
+
+```shell
+kubectl apply -k ./tarzan/
+```
+
+The Kubernetes deployment includes:
+
+- **Security-hardened containers**: Non-root user, read-only filesystem, dropped capabilities
+- **Health checks**: Configurable liveness and readiness probes
+- **Resource management**: Optimized for efficient cluster resource usage
+- **Persistent storage**: Configurable PVC for data persistence
+- **Production-ready**: Rolling updates with zero-downtime deployment strategy
 
 ## ⚙️ Configuration
 
