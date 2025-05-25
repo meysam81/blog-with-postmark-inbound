@@ -8,7 +8,7 @@ import (
 	"github.com/meysam81/x/sqlite"
 )
 
-func NewDatastore(ctx context.Context, cfg *config.Config) (*Sqlite, error) {
+func (b *Builder) NewDatastore(ctx context.Context, cfg *config.Config) (*Sqlite, error) {
 	db, err := createDB(ctx, cfg)
 	if err != nil {
 		return nil, err

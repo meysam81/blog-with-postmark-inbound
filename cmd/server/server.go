@@ -26,12 +26,16 @@ func Main(frontend embed.FS) {
 		log.Fatalln(err)
 	}
 
+	fmt.Println(cfg.BaseUrl)
+
 	authorizedEmails := []string{}
 
 	ctxT, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	ds, err := sqlite.NewDatastore(ctxT, cfg)
+	sqliteBuilder := &sqlite.Builder{}
+
+	ds, err := sqliteBuilder.NewDatastore(ctxT, cfg)
 	defer ds.Close()
 
 	if err != nil {
