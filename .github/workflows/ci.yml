@@ -83,11 +83,16 @@ jobs:
           cache-to: type=local,dest=/tmp/dockercache
           checkout: false
           cosign: true
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
           image-name: ghcr.io/${{ github.repository }}
           image-extra-tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.run_id }}
             ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ${{ github.repository }}:latest
+            ${{ github.repository }}:${{ github.run_id }}
+            ${{ github.repository }}:${{ github.sha }}
           kubescape: true
 
   release-please:
@@ -148,8 +153,12 @@ jobs:
           cache-to: type=local,dest=/tmp/dockercache
           checkout: false
           cosign: true
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKERHUB_PASSWORD }}
           image-name: ghcr.io/${{ github.repository }}
-          image-extra-tags: ghcr.io/${{ github.repository }}:${{ needs.release-please.outputs.tag_name }}
+          image-extra-tags: |
+            ghcr.io/${{ github.repository }}:${{ needs.release-please.outputs.tag_name }}
+            ${{ github.repository }}:${{ needs.release-please.outputs.tag_name }}
           kubescape: true
           metadata-tags: |
             type=semver,pattern={{version}}
