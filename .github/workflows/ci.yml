@@ -164,3 +164,21 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Cache lychee
+        uses: actions/cache@v4
+        with:
+          key: lychee-${{ runner.os }}-${{ hashFiles('**/lychee.toml') }}
+          path: .lycheecache
+          restore-keys: |
+            lychee-
+      - id: lychee
+        name: Link Checker
+        uses: lycheeverse/lychee-action@v2
+        with:
+          fail: ${{ github.ref == 'refs/heads/main' }}
