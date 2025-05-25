@@ -21,9 +21,8 @@ type cfg struct {
 	DbPath               string `koanf:"dir.db"`
 	StoragePath          string `koanf:"dir.storage"`
 	AuthorizedEmailsPath string `koanf:"dir.authorized-emails"`
-	FrontendPath         string `koanf:"dir.frontend"`
 
-	BaseUrl string `koanf:"serve.base-url"`
+	BaseUrl string `koanf:"base-url"`
 }
 
 type Config = cfg
@@ -36,7 +35,7 @@ func NewConfig() (*Config, error) {
 
 	// default configs if none is proivded from the upstream
 	err = c.Koanf().Load(confmap.Provider(map[string]interface{}{
-		"serve.base-url":        "https://tarzan.meysam.io",
+		"base-url":              "https://tarzan.meysam.io",
 		"port":                  8000,
 		"auth.username":         "postmarkapp",
 		"auth.password":         "Secr3t!",
@@ -45,7 +44,6 @@ func NewConfig() (*Config, error) {
 		"redis.db":              0,
 		"dir.db":                "tarzan.db",
 		"dir.storage":           "storage",
-		"dir.frontend":          "public",
 		"dir.authorized-emails": "deploy/authorized-emails.json",
 	}, "."), nil)
 	if err != nil {
