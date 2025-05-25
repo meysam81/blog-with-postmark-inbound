@@ -314,7 +314,7 @@ export default {
     }
 
     onMounted(function onMountedHandler() {
-      log.warn("Mounting the main content...")
+      log.debug("Mounting the main content...")
       connectWebSocket()
       loadPosts()
     })
