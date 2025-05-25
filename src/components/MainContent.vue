@@ -124,11 +124,12 @@
 
 <script>
 import { ref, onMounted, onUnmounted } from 'vue'
-import BlogPosts from './BlogPosts.vue'
-import EmptyState from './EmptyState.vue'
-import ErrorBoundary from './ErrorBoundary.vue'
-import { fetchPosts } from '../utils/api.js'
-import { useNetworkStatus } from '../utils/network.js'
+import BlogPosts from '@/components/BlogPosts.vue'
+import EmptyState from '@/components/EmptyState.vue'
+import ErrorBoundary from '@/components/ErrorBoundary.vue'
+import { fetchPosts } from '@/utils/api.js'
+import { useNetworkStatus } from '@/utils/network.js'
+import { VITE_WEBSOCKET_URL } from '@/utils/env.js'
 import log from 'loglevel'
 
 export default {
@@ -195,7 +196,7 @@ export default {
 
       try {
         log.debug('Attempting to connect WebSocket...')
-        websocket.value = new WebSocket('ws://localhost:8000/ws')
+        websocket.value = new WebSocket(VITE_WEBSOCKET_URL)
 
         websocket.value.onopen = function wsOnOpen() {
           log.info('WebSocket connection established')

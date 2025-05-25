@@ -14,7 +14,7 @@ export default defineConfig(function configureVite({ mode }) {
       host: "::",
       port: env.PORT || 8080,
       proxy: {
-        "/api": "http://localhost:8000",
+        '/api': env.VITE_API_URL || 'http://localhost:8000',
       },
     },
     resolve: {

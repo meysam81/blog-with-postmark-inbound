@@ -7,6 +7,8 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=cache,target=/root/.bun \
     bun install
 
+ENV VITE_WEBSOCKET_URL=ws://tarzan.meysam.io/ws
+
 COPY . .
 RUN --mount=type=cache,target=/root/.bun \
     bun run build
