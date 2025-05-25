@@ -10,7 +10,7 @@ if (import.meta.env.DEV) {
   log.setDefaultLevel("warn");
 }
 
-log.info("🚀 Tarzan: Where Words Swing Free - Initializing revolutionary blogging experience...");
+log.info("🚀 Tarzan: Email to Blog Platform - Initializing application...");
 
 var app = createApp(App)
 

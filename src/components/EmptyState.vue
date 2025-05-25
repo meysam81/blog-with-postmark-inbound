@@ -46,13 +46,12 @@
       <!-- Text Content -->
       <div class="text-content">
         <h2 class="empty-title">
-          <span class="title-primary">No Stories Yet</span>
-          <span class="title-secondary">But Great Things Are Coming!</span>
+          <span class="title-primary">No Blog Posts Yet</span>
+          <span class="title-secondary">Be the First to Send an Email!</span>
         </h2>
 
         <p class="empty-description">
-          This is where amazing stories will live. Be the first to transform your emails into
-          beautiful blog posts and share your thoughts with the world.
+          This is where blog posts created from emails will appear. Send an email to our blog address and watch your post appear here instantly.
         </p>
 
         <!-- Action Buttons -->
@@ -61,14 +60,14 @@
             <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
             </svg>
-            <span>Start Publishing</span>
+            <span>Send Email</span>
           </button>
 
           <button class="secondary-action-btn" @click="handleScrollToInstructions">
             <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
             </svg>
-            <span>View Instructions</span>
+            <span>How It Works</span>
           </button>
         </div>
       </div>
@@ -87,7 +86,7 @@
     <div class="cta-footer">
       <div class="cta-content">
         <p class="cta-text">
-          Ready to get started? Send your first email and watch the magic happen ✨
+          Ready to get started? Send your first email and watch your blog post appear ✨
         </p>
       </div>
     </div>
@@ -99,7 +98,7 @@ export default {
   name: 'EmptyState',
   setup() {
     function handleLearnMore() {
-      // Scroll to or navigate to publishing instructions
+      // Scroll to or navigate to email instructions
       var instructionsElement = document.querySelector('#publishing-instructions')
       if (instructionsElement) {
         instructionsElement.scrollIntoView({

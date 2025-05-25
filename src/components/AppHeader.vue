@@ -17,7 +17,7 @@
           <div class="flex items-center justify-center gap-4 mb-6">
             <div class="h-px bg-gradient-to-r from-transparent via-slate-400 to-transparent flex-1 max-w-32"></div>
             <p class="text-lg md:text-xl text-slate-300 font-light tracking-wider uppercase">
-              Where Words Swing Free
+              Email to Blog, Instantly
             </p>
             <div class="h-px bg-gradient-to-r from-transparent via-slate-400 to-transparent flex-1 max-w-32"></div>
           </div>
@@ -26,31 +26,29 @@
         <!-- Main Tagline -->
         <div class="mb-12">
           <h2 class="text-2xl md:text-4xl lg:text-5xl font-bold text-slate-100 leading-tight mb-6">
-            <span class="block">Transform Your</span>
+            <span class="block">Turn Your</span>
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-cyan-300 font-black drop-shadow-sm">
-              Inbox
+              Email
             </span>
-            <span class="block">Into a Publishing Powerhouse</span>
-          </h2>
-
-          <p class="text-lg md:text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto mb-8">
-            Experience the revolution in content creation. No interfaces, no complexity—just pure literary freedom through the elegance of email.
+            <span class="block">Into a Blog Post</span>
+          </h2>            <p class="text-lg md:text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto mb-8">
+            Send an email, publish a blog post. No registration required.
           </p>
 
-          <!-- Publishing Instructions -->
+          <!-- Email Instructions -->
           <div
             class="bg-gradient-to-r from-emerald-900/30 to-blue-900/30 backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-6 mb-10 max-w-2xl mx-auto"
-            aria-label="Publishing instructions"
+            aria-label="Email instructions"
             tabindex="0"
           >
             <div class="flex items-center justify-center gap-3 mb-4">
               <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <h3 class="text-lg font-semibold text-emerald-300">Dead Simple Publishing</h3>
+              <h3 class="text-lg font-semibold text-emerald-300">Simple Process</h3>
               <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
             </div>
 
             <p class="text-slate-200 mb-4 leading-relaxed">
-              Send an email to <strong class="text-emerald-300 font-mono">blog@tarzan.meysam.io</strong> and see your content live in seconds
+              Send an email to <strong class="text-emerald-300 font-mono">blog@tarzan.meysam.io</strong> and your blog post goes live instantly
             </p>
 
             <div class="flex items-center justify-center gap-2">
@@ -79,8 +77,8 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
               </div>
-              <h3 class="font-semibold text-slate-200 mb-1">Email-Powered Publishing</h3>
-              <p class="text-slate-400 text-xs">Send an email, publish a post. It's that revolutionary.</p>
+              <h3 class="font-semibold text-slate-200 mb-1">Email to Blog</h3>
+              <p class="text-slate-400 text-xs">Send an email, get a blog post. No signup required.</p>
             </div>
 
             <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4">
@@ -89,8 +87,8 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                 </svg>
               </div>
-              <h3 class="font-semibold text-slate-200 mb-1">Developer-First Experience</h3>
-              <p class="text-slate-400 text-xs">Built for those who think in code and write in markdown.</p>
+              <h3 class="font-semibold text-slate-200 mb-1">Developer-Friendly</h3>
+              <p class="text-slate-400 text-xs">Write in your favorite email client, publish instantly.</p>
             </div>
 
             <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4">
@@ -99,8 +97,8 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
               </div>
-              <h3 class="font-semibold text-slate-200 mb-1">Lightning Fast</h3>
-              <p class="text-slate-400 text-xs">From compose to publish in seconds, not minutes.</p>
+              <h3 class="font-semibold text-slate-200 mb-1">Instant Publishing</h3>
+              <p class="text-slate-400 text-xs">From email send to live blog post in seconds.</p>
             </div>
           </div>
         </div>
@@ -111,10 +109,10 @@
           <button
             @click="scrollToContent"
             class="group bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/25"
-            aria-label="Explore published stories"
+            aria-label="View published blog posts"
           >
             <span class="flex items-center gap-2">
-              Explore Stories
+              View Blog Posts
               <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
               </svg>

@@ -23,18 +23,17 @@
             </div>
             <div class="brand-info">
               <h3 class="brand-title">Tarzan</h3>
-              <p class="brand-tagline">Email-Powered Blogging Platform</p>
+              <p class="brand-tagline">Email to Blog Platform</p>
             </div>
           </div>
 
           <p class="brand-description">
-            Transform your emails into beautiful blog posts. For developers who prefer
-            the command line over complex interfaces.
+            Send an email, get a blog post. No complex interfaces, no registration required.
           </p>
 
           <div class="brand-motto">
-            <span class="motto-icon">🚀</span>
-            <span class="motto-text">Because Real Geeks Send Blog Posts via Email</span>
+            <span class="motto-icon">📧</span>
+            <span class="motto-text">Email → Blog Post. It's That Simple.</span>
           </div>
         </div>
 

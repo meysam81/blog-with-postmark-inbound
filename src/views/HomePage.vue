@@ -29,14 +29,14 @@ export default {
     ScrollProgress
   },
   mounted: function setHomePageTitle() {
-    document.title = 'Tarzan - Dead Simple Blogging'
+    document.title = 'Tarzan - Email to Blog Platform'
   },
   beforeRouteEnter: function beforeEnterHome(to, from, next) {
-    document.title = 'Tarzan - Dead Simple Blogging'
+    document.title = 'Tarzan - Email to Blog Platform'
     next()
   },
   beforeRouteUpdate: function beforeUpdateHome(to, from, next) {
-    document.title = 'Tarzan - Dead Simple Blogging'
+    document.title = 'Tarzan - Email to Blog Platform'
     next()
   }
 }

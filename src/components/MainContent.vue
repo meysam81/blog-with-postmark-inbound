@@ -20,18 +20,18 @@
         <div class="text-center mb-16">
           <div class="inline-flex items-center gap-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-full px-6 py-2 mb-8">
             <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-            <span class="text-sm text-slate-300 font-medium">Latest Publications</span>
+            <span class="text-sm text-slate-300 font-medium">Latest Blog Posts</span>
           </div>
 
           <h2 class="text-3xl md:text-5xl font-bold text-slate-100 mb-6">
-            <span class="block">Stories That</span>
+            <span class="block">Blog Posts From</span>
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-blue-300">
-              Transcend Boundaries
+              Email
             </span>
           </h2>
 
           <p class="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Discover groundbreaking thoughts and revolutionary ideas from our community of digital pioneers who chose freedom over interfaces.
+            See what happens when you send an email to our blog address. Each post below was created by simply sending an email.
           </p>
         </div>
 
@@ -48,7 +48,7 @@
               <div class="w-16 h-16 border-4 border-slate-700 border-t-emerald-400 rounded-full animate-spin"></div>
               <div class="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-blue-400 rounded-full animate-spin" style="animation-delay: 0.15s;"></div>
             </div>
-            <p class="text-slate-300 mt-6 text-lg">Loading amazing stories...</p>
+            <p class="text-slate-300 mt-6 text-lg">Loading blog posts...</p>
             <div class="flex space-x-1 mt-4">
               <div class="w-2 h-2 bg-emerald-400 rounded-full animate-bounce"></div>
               <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
@@ -108,18 +108,18 @@
         <div v-if="posts.length > 0" class="text-center mt-20">
           <div class="max-w-3xl mx-auto">
             <h3 class="text-2xl md:text-3xl font-bold text-slate-100 mb-6">
-              Ready to Join the Revolution?
+              Ready to Try It?
             </h3>
             <p class="text-slate-300 mb-8 leading-relaxed">
-              Your voice matters. Your stories deserve to be heard. Break free from traditional publishing constraints and let your words swing free with Tarzan.
+              Send an email to our blog address and watch your post appear here instantly. No registration, no complex interface—just email.
             </p>
             <button
               @click="scrollToTop"
               class="group bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-400 hover:to-blue-400 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/25"
-              aria-label="Scroll to publishing instructions"
+              aria-label="Scroll to email instructions"
             >
               <span class="flex items-center gap-2">
-                Start Publishing
+                Send Your First Email
                 <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l4-4m0 0l4 4m-4-4v18"></path>
                 </svg>
@@ -205,15 +205,15 @@ export default {
 
     function scrollToTop() {
       try {
-        // First try to scroll to the publishing instructions in the header
-        var publishingInstructions = document.querySelector('[aria-label="Publishing instructions"]')
+        // First try to scroll to the email instructions in the header
+        var publishingInstructions = document.querySelector('[aria-label="Email instructions"]')
         if (publishingInstructions) {
           publishingInstructions.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
           })
           publishingInstructions.focus()
-          log.debug('Scrolled to publishing instructions')
+          log.debug('Scrolled to email instructions')
           return
         }
 
@@ -228,7 +228,7 @@ export default {
         var announcement = document.createElement('div')
         announcement.setAttribute('aria-live', 'polite')
         announcement.className = 'sr-only'
-        announcement.textContent = 'Scrolled to publishing instructions at the top of the page'
+        announcement.textContent = 'Scrolled to email instructions at the top of the page'
         document.body.appendChild(announcement)
 
         setTimeout(function removeAnnouncement() {
@@ -236,7 +236,7 @@ export default {
         }, 3000)
 
       } catch (error) {
-        log.error('Error scrolling to publishing instructions:', error)
+        log.error('Error scrolling to email instructions:', error)
         // Fallback: just scroll to top
         window.scrollTo(0, 0)
       }
