@@ -10,18 +10,26 @@ import (
 type RSS struct {
 	XMLName xml.Name `xml:"rss"`
 	Version string   `xml:"version,attr"`
+	AtomNS  string   `xml:"xmlns:atom,attr"`
 	Channel Channel  `xml:"channel"`
 }
 
 type Channel struct {
-	Title         string `xml:"title"`
-	Link          string `xml:"link"`
-	Description   string `xml:"description"`
-	Language      string `xml:"language,omitempty"`
-	PubDate       string `xml:"pubDate,omitempty"`
-	LastBuildDate string `xml:"lastBuildDate,omitempty"`
-	Generator     string `xml:"generator,omitempty"`
-	Items         []Item `xml:"item"`
+	Title         string   `xml:"title"`
+	Link          string   `xml:"link"`
+	Description   string   `xml:"description"`
+	Language      string   `xml:"language,omitempty"`
+	PubDate       string   `xml:"pubDate,omitempty"`
+	LastBuildDate string   `xml:"lastBuildDate,omitempty"`
+	Generator     string   `xml:"generator,omitempty"`
+	AtomLink      AtomLink `xml:"atom:link"`
+	Items         []Item   `xml:"item"`
+}
+
+type AtomLink struct {
+	Href string `xml:"href,attr"`
+	Rel  string `xml:"rel,attr"`
+	Type string `xml:"type,attr"`
 }
 
 type Item struct {
@@ -55,7 +63,12 @@ func (a *AppState) RSSHandler(w http.ResponseWriter, r *http.Request) {
 		Language:      "en-us",
 		Generator:     "Tarzan RSS Generator",
 		LastBuildDate: time.Now().Format(time.RFC1123Z),
-		Items:         []Item{},
+		AtomLink: AtomLink{
+			Href: fmt.Sprintf("%s/rss", baseURL),
+			Rel:  "self",
+			Type: "application/rss+xml",
+		},
+		Items: []Item{},
 	}
 
 	for _, post := range *posts {
@@ -78,6 +91,7 @@ func (a *AppState) RSSHandler(w http.ResponseWriter, r *http.Request) {
 
 	rss := RSS{
 		Version: "2.0",
+		AtomNS:  "http://www.w3.org/2005/Atom",
 		Channel: channel,
 	}
 
