@@ -42,6 +42,7 @@ ENV DIR_DB=/data/tarzan.db \
     DIR_STORAGE=/data/storage
 
 COPY deploy /deploy
+COPY LICENSE .
 COPY --from=builder /app/tarzan /tarzan
 
 CMD ["/tarzan"]
