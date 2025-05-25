@@ -36,3 +36,4 @@ node_modules/
 dist
 .vite
 .secrets/
+.lycheecache
