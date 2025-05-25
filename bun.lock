@@ -8,6 +8,7 @@
         "loglevel": "^1.9.2",
         "tailwindcss": "^4.1.7",
         "vue": "^3.5.13",
+        "vue-router": "^4.5.1",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -182,6 +183,8 @@
 
     "@vue/compiler-ssr": ["@vue/compiler-ssr@3.5.14", "", { "dependencies": { "@vue/compiler-dom": "3.5.14", "@vue/shared": "3.5.14" } }, "sha512-Y0G7PcBxr1yllnHuS/NxNCSPWnRGH4Ogrp0tsLA5QemDZuJLs99YjAKQ7KqkHE0vCg4QTKlQzXLKCMF7WPSl7Q=="],
 
+    "@vue/devtools-api": ["@vue/devtools-api@6.6.4", "", {}, "sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g=="],
+
     "@vue/reactivity": ["@vue/reactivity@3.5.14", "", { "dependencies": { "@vue/shared": "3.5.14" } }, "sha512-7cK1Hp343Fu/SUCCO52vCabjvsYu7ZkOqyYu7bXV9P2yyfjUMUXHZafEbq244sP7gf+EZEz+77QixBTuEqkQQw=="],
 
     "@vue/runtime-core": ["@vue/runtime-core@3.5.14", "", { "dependencies": { "@vue/reactivity": "3.5.14", "@vue/shared": "3.5.14" } }, "sha512-w9JWEANwHXNgieAhxPpEpJa+0V5G0hz3NmjAZwlOebtfKyp2hKxKF0+qSh0Xs6/PhfGihuSdqMprMVcQU/E6ag=="],
@@ -309,6 +312,8 @@
     "vite-plugin-minify": ["vite-plugin-minify@2.1.0", "", { "dependencies": { "@types/html-minifier-terser": "^7.0.2", "html-minifier-terser": "^7.2.0" }, "peerDependencies": { "vite": ">=5" } }, "sha512-h+Ae0WX0mvrWM4GhE6JX2NmxlDuZRv4AgcTHFqfbSyPwS+OdlOM692AQrK0eO8lDEh7gYLjG3EHovKvtrNQDvA=="],
 
     "vue": ["vue@3.5.14", "", { "dependencies": { "@vue/compiler-dom": "3.5.14", "@vue/compiler-sfc": "3.5.14", "@vue/runtime-dom": "3.5.14", "@vue/server-renderer": "3.5.14", "@vue/shared": "3.5.14" }, "peerDependencies": { "typescript": "*" }, "optionalPeers": ["typescript"] }, "sha512-LbOm50/vZFG6Mhy6KscQYXZMQ0LMCC/y40HDJPPvGFQ+i/lUH+PJHR6C3assgOQiXdl6tAfsXHbXYVBZZu65ew=="],
+
+    "vue-router": ["vue-router@4.5.1", "", { "dependencies": { "@vue/devtools-api": "^6.6.4" }, "peerDependencies": { "vue": "^3.2.0" } }, "sha512-ogAF3P97NPm8fJsE4by9dwSYtDwXIY1nFY9T6DyQnGHd1E2Da94w9JIolpe42LJGIl0DwOHBi8TcRPlPGwbTtw=="],
 
     "yallist": ["yallist@5.0.0", "", {}, "sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw=="],
 
