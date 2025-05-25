@@ -51,21 +51,36 @@
               Send an email to <strong class="text-emerald-300 font-mono">blog@tarzan.meysam.io</strong> and your blog post goes live instantly
             </p>
 
-            <div class="flex items-center justify-center gap-2">
+            <div class="flex items-center justify-center gap-2 relative">
               <button
                 @click="copyEmailAddress"
-                :class="{ 'copied': emailCopied }"
-                class="group inline-flex items-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105"
+                :class="{
+                  'copied': emailCopied,
+                  'success-pulse': emailCopied
+                }"
+                class="group inline-flex items-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 relative overflow-hidden"
                 :aria-label="emailCopied ? 'Email address copied!' : 'Copy email address'"
               >
-                <svg v-if="!emailCopied" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg v-if="!emailCopied" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                 </svg>
-                <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg v-else class="w-4 h-4 transition-all duration-200 scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
-                <span>{{ emailCopied ? 'Copied!' : 'Copy Address' }}</span>
+                <span class="transition-all duration-200">{{ emailCopied ? 'Copied!' : 'Copy Address' }}</span>
+
+                <!-- Success ripple effect -->
+                <div v-if="emailCopied" class="absolute inset-0 bg-emerald-400/30 rounded-lg animate-ping"></div>
               </button>
+
+              <!-- Success tooltip -->
+              <div
+                v-if="emailCopied"
+                class="email-copy-tooltip"
+              >
+                ✓ Email copied to clipboard!
+                <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-emerald-900/90 border-l border-t border-emerald-500/50 rotate-45"></div>
+              </div>
             </div>
           </div>
 
@@ -217,5 +232,77 @@ export default {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Success button styles */
+.copied {
+  background: rgba(16, 185, 129, 0.3) !important;
+  border-color: rgba(16, 185, 129, 0.6) !important;
+  color: rgb(52, 211, 153) !important;
+}
+
+.success-pulse {
+  animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.email-copy-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  background: rgba(6, 78, 59, 0.9);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  color: rgb(167, 243, 208);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 10;
+  opacity: 0;
+  animation: tooltipFadeIn 0.2s ease-out forwards;
+}
+
+@keyframes tooltipFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 </style>

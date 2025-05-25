@@ -140,20 +140,34 @@
             <!-- Share Section -->
             <div class="flex items-center gap-4">
               <span class="text-slate-300 font-medium">Share this post:</span>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 relative">
                 <button
                   @click="copyPostUrl"
-                  :class="{ 'text-emerald-400': urlCopied }"
-                  class="p-2 text-slate-400 hover:text-emerald-400 transition-colors border border-slate-700 rounded-lg hover:border-emerald-500/50"
+                  :class="{
+                    'text-emerald-400 border-emerald-500/50 success-pulse': urlCopied,
+                    'text-slate-400 hover:text-emerald-400 border-slate-700 hover:border-emerald-500/50': !urlCopied
+                  }"
+                  class="p-2 transition-all duration-300 border rounded-lg relative overflow-hidden"
                   :aria-label="urlCopied ? 'URL copied!' : 'Copy post URL'"
                 >
-                  <svg v-if="!urlCopied" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg v-if="!urlCopied" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                   </svg>
-                  <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg v-else class="w-5 h-5 transition-all duration-200 scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                   </svg>
+
+                  <!-- Success ripple effect -->
+                  <div v-if="urlCopied" class="absolute inset-0 bg-emerald-400/20 rounded-lg animate-ping"></div>
                 </button>
+
+                <!-- Success tooltip -->
+                <div
+                  v-if="urlCopied"
+                  class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-white px-3 py-1 rounded-md text-sm font-medium shadow-lg animate-bounce whitespace-nowrap z-10"
+                >
+                  ✓ URL copied!
+                </div>
               </div>
             </div>
 
@@ -393,5 +407,25 @@ export default {
   .blog-post-content :deep(h1) { font-size: 1.875rem; }
   .blog-post-content :deep(h2) { font-size: 1.5rem; }
   .blog-post-content :deep(h3) { font-size: 1.25rem; }
+}
+
+/* Success animation for copy button */
+.success-pulse {
+  animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
 }
 </style>

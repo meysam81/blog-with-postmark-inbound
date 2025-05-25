@@ -1,15 +1,11 @@
 <template>
-  <main
-    id="main-content"
-    class="relative z-10 py-16 md:py-24"
-    role="main"
-    aria-label="Blog posts and content"
-  >
+  <main id="main-content" class="relative z-10 py-16 md:py-24" role="main" aria-label="Blog posts and content">
     <div class="container mx-auto px-6">
       <!-- Network Status Indicator -->
       <div v-if="!isOnline" class="network-status offline" role="alert" aria-live="assertive">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-12.728 12.728m0 0L12 12m-6.364 6.364L12 12m6.364-6.364L12 12"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M18.364 5.636l-12.728 12.728m0 0L12 12m-6.364 6.364L12 12m6.364-6.364L12 12" />
         </svg>
         <span>You are currently offline. Some features may be limited.</span>
       </div>
@@ -18,7 +14,8 @@
       <ErrorBoundary @retry="handleErrorRetry">
         <!-- Section Header -->
         <div class="text-center mb-16">
-          <div class="inline-flex items-center gap-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-full px-6 py-2 mb-8">
+          <div
+            class="inline-flex items-center gap-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-full px-6 py-2 mb-8">
             <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
             <span class="text-sm text-slate-300 font-medium">Latest Blog Posts</span>
           </div>
@@ -31,22 +28,21 @@
           </h2>
 
           <p class="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            See what happens when you send an email to our blog address. Each post below was created by simply sending an email.
+            Experience the magic of email-powered blogging. Each post below was created by simply sending an email—no
+            complex interfaces or setup required.
           </p>
         </div>
 
         <!-- Content Area -->
         <div class="max-w-6xl mx-auto">
           <!-- Loading State -->
-          <div
-            v-if="isLoading"
-            class="flex flex-col items-center justify-center py-20"
-            role="status"
-            aria-label="Loading blog posts"
-          >
+          <div v-if="isLoading" class="flex flex-col items-center justify-center py-20" role="status"
+            aria-label="Loading blog posts">
             <div class="relative">
               <div class="w-16 h-16 border-4 border-slate-700 border-t-emerald-400 rounded-full animate-spin"></div>
-              <div class="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-blue-400 rounded-full animate-spin" style="animation-delay: 0.15s;"></div>
+              <div
+                class="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-blue-400 rounded-full animate-spin"
+                style="animation-delay: 0.15s;"></div>
             </div>
             <p class="text-slate-300 mt-6 text-lg">Loading blog posts...</p>
             <div class="flex space-x-1 mt-4">
@@ -57,28 +53,24 @@
           </div>
 
           <!-- Error State -->
-          <div
-            v-else-if="hasError"
-            class="flex flex-col items-center justify-center py-20"
-            role="alert"
-            aria-live="polite"
-          >
+          <div v-else-if="hasError" class="flex flex-col items-center justify-center py-20" role="alert"
+            aria-live="polite">
             <div class="text-center max-w-md mx-auto">
               <div class="w-16 h-16 mx-auto mb-6 text-red-400">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
               <h3 class="text-xl font-semibold text-slate-100 mb-4">Oops! Something went wrong</h3>
               <p class="text-slate-300 mb-6">{{ errorMessage }}</p>
               <div class="space-y-3">
-                <button
-                  @click="retryLoadPosts"
-                  class="w-full bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
-                >
+                <button @click="retryLoadPosts"
+                  class="w-full bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105">
                   <span class="flex items-center justify-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                     Try Again
                   </span>
@@ -92,15 +84,8 @@
 
           <!-- Content -->
           <template v-else>
-            <BlogPosts
-              v-if="posts.length > 0"
-              :posts="posts"
-              class="fade-in-up"
-            />
-            <EmptyState
-              v-else
-              class="fade-in-up"
-            />
+            <BlogPosts v-if="posts.length > 0" :posts="posts" class="fade-in-up" />
+            <EmptyState v-else class="fade-in-up" />
           </template>
         </div>
 
@@ -111,17 +96,18 @@
               Ready to Try It?
             </h3>
             <p class="text-slate-300 mb-8 leading-relaxed">
-              Send an email to our blog address and watch your post appear here instantly. No registration, no complex interface—just email.
+              Send an email to our blog address and watch your post appear here instantly. No registration, no complex
+              interface—just email.
             </p>
-            <button
-              @click="scrollToTop"
+            <button @click="scrollToTop"
               class="group bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-400 hover:to-blue-400 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/25"
-              aria-label="Scroll to email instructions"
-            >
+              aria-label="Scroll to email instructions">
               <span class="flex items-center gap-2">
                 Send Your First Email
-                <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l4-4m0 0l4 4m-4-4v18"></path>
+                <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l4-4m0 0l4 4m-4-4v18">
+                  </path>
                 </svg>
               </span>
             </button>
@@ -198,6 +184,17 @@ export default {
       }
     }
 
+    function setupWebsocket() {
+      var ws = new WebSocket('ws://localhost:8000/ws');
+      ws.onmessage = async function wsOnMessage(event) {
+        log.error("WebSocket message received:", event.data);
+        await loadPosts();
+      };
+      ws.onclose = function wsOnClose() {
+        log.warn('WebSocket connection closed, retrying in 5 seconds...');
+      };
+    }
+
     function retryLoadPosts() {
       retryCount.value = 0
       loadPosts()
@@ -247,6 +244,8 @@ export default {
     }
 
     onMounted(function onMountedHandler() {
+      log.warn("Mounting the main content...")
+      setupWebsocket()
       loadPosts()
     })
 
@@ -292,9 +291,12 @@ export default {
 }
 
 @keyframes pulseRed {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.9;
   }
+
   50% {
     opacity: 1;
   }
@@ -310,6 +312,7 @@ export default {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

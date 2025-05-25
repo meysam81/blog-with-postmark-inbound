@@ -47,25 +47,25 @@
       <div class="text-content">
         <h2 class="empty-title">
           <span class="title-primary">No Blog Posts Yet</span>
-          <span class="title-secondary">Be the First to Send an Email!</span>
+          <span class="title-secondary">Start Publishing with a Single Email</span>
         </h2>
 
         <p class="empty-description">
-          This is where blog posts created from emails will appear. Send an email to our blog address and watch your post appear here instantly.
+          Transform any email into a beautiful blog post instantly. Send an email to our blog address and watch your content go live in seconds—no complex setup required.
         </p>
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-          <button class="primary-action-btn" @click="handleLearnMore">
+          <button class="primary-action-btn" @click="handleSendEmail">
             <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 7.89a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
             </svg>
             <span>Send Email</span>
           </button>
 
-          <button class="secondary-action-btn" @click="handleScrollToInstructions">
+          <button class="secondary-action-btn" @click="handleShowInstructions">
             <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             <span>How It Works</span>
           </button>
@@ -86,45 +86,203 @@
     <div class="cta-footer">
       <div class="cta-content">
         <p class="cta-text">
-          Ready to get started? Send your first email and watch your blog post appear ✨
+          Ready to publish your first post? Send an email and see the magic happen ✨
         </p>
+      </div>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div
+      v-if="isModalOpen"
+      class="instructions-modal-backdrop"
+      role="dialog"
+      aria-labelledby="instructions-title"
+      aria-describedby="instructions-description"
+      @click="handleBackdropClick"
+      @keydown.esc="closeInstructionsModal"
+    >
+      <div class="instructions-modal" @click.stop>
+        <div class="instructions-header">
+          <h3 id="instructions-title" class="instructions-title">
+            <svg class="title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 7.89a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            How Email Blogging Works
+          </h3>
+          <button class="close-btn" aria-label="Close instructions" @click="closeInstructionsModal">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="instructions-content">
+          <p id="instructions-description" class="instructions-intro">
+            Publishing a blog post is as simple as sending an email. Here's how:
+          </p>
+
+          <div class="instructions-steps">
+            <div class="instruction-step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Send an Email</h4>
+                <p>Compose your blog post in an email and send it to: <strong>{{ blogEmail }}</strong></p>
+                <button
+                  class="copy-email-btn"
+                  :class="{ 'copied': emailCopied, 'success-pulse': emailCopied }"
+                  @click="copyBlogEmail"
+                  :aria-label="emailCopied ? 'Email address copied!' : 'Copy email address'"
+                >
+                  <svg
+                    v-if="!emailCopied"
+                    class="copy-icon transition-transform duration-200"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                  </svg>
+                  <svg
+                    v-else
+                    class="copy-icon transition-all duration-200 scale-110"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span class="transition-all duration-200">{{ emailCopied ? 'Copied!' : 'Copy Email' }}</span>
+
+                  <div v-if="emailCopied" class="absolute inset-0 bg-emerald-400/20 rounded-lg animate-ping"></div>
+
+                  <div
+                    v-if="emailCopied"
+                    class="email-copy-tooltip"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>Email copied to clipboard!</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Automatic Publishing</h4>
+                <p>Your email will be automatically converted into a beautiful blog post and published instantly.</p>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Share & Enjoy</h4>
+                <p>Your blog post is now live and ready to be shared with the world!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="instructions-footer">
+            <button class="try-now-btn" @click="handleTryNow">
+              <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 7.89a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+              Try It Now
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 </template>
 
 <script>
+import { ref } from 'vue'
+
 export default {
   name: 'EmptyState',
   setup() {
-    function handleLearnMore() {
-      // Scroll to or navigate to email instructions
-      var instructionsElement = document.querySelector('#publishing-instructions')
-      if (instructionsElement) {
-        instructionsElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        })
+    var blogEmail = 'blog@tarzan.meysam.io'
+    var isModalOpen = ref(false)
+    var emailCopied = ref(false)
+
+    function handleSendEmail() {
+      var subject = encodeURIComponent('My First Blog Post')
+      var body = encodeURIComponent('Write your blog post content here...\n\nThis email will become a beautiful blog post! Markdown is supported.')
+      var mailtoUrl = 'mailto:' + blogEmail + '?subject=' + subject + '&body=' + body
+
+      window.location.href = mailtoUrl
+    }
+
+    function handleShowInstructions() {
+      isModalOpen.value = true
+    }
+
+    function closeInstructionsModal() {
+      isModalOpen.value = false
+    }
+
+    function handleBackdropClick(event) {
+      if (event.target.classList.contains('instructions-modal-backdrop')) {
+        closeInstructionsModal()
       }
     }
 
-    function handleScrollToInstructions() {
-      // Alternative scroll to instructions
-      var mainContent = document.querySelector('#main-content')
-      if (mainContent) {
-        var instructionsSection = mainContent.querySelector('.instructions-section')
-        if (instructionsSection) {
-          instructionsSection.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          })
-        }
-      }
+    function copyBlogEmail() {
+      navigator.clipboard.writeText(blogEmail).then(function onSuccess() {
+        emailCopied.value = true
+
+        setTimeout(function resetCopyState() {
+          emailCopied.value = false
+        }, 2000)
+
+        var announcement = document.createElement("div")
+        announcement.setAttribute("aria-live", "polite")
+        announcement.className = "sr-only"
+        announcement.textContent = "Email address copied to clipboard"
+        document.body.appendChild(announcement)
+
+        setTimeout(function removeAnnouncement() {
+          document.body.removeChild(announcement)
+        }, 3000)
+      }).catch(function onError() {
+        // Fallback for older browsers
+        var textArea = document.createElement('textarea')
+        textArea.value = blogEmail
+        document.body.appendChild(textArea)
+        textArea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textArea)
+
+        emailCopied.value = true
+        setTimeout(function resetFallbackCopyState() {
+          emailCopied.value = false
+        }, 2000)
+      })
+    }
+
+    function handleTryNow() {
+      var subject = encodeURIComponent('My First Blog Post')
+      var body = encodeURIComponent('Write your blog post content here...\n\nThis email will become a beautiful blog post!')
+      var mailtoUrl = 'mailto:' + blogEmail + '?subject=' + subject + '&body=' + body
+
+      window.location.href = mailtoUrl
+      closeInstructionsModal()
     }
 
     return {
-      handleLearnMore,
-      handleScrollToInstructions
+      blogEmail,
+      isModalOpen,
+      emailCopied,
+      handleSendEmail,
+      handleShowInstructions,
+      closeInstructionsModal,
+      handleBackdropClick,
+      copyBlogEmail,
+      handleTryNow
     }
   }
 }
@@ -476,6 +634,304 @@ export default {
   font-weight: 500;
 }
 
+/* Instructions Modal Styles */
+.instructions-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: modalBackdropFadeIn 0.3s ease-out;
+}
+
+.instructions-modal {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.98));
+  border-radius: 24px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  backdrop-filter: blur(16px);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease-out;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.instructions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 2rem 1rem 2rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.instructions-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.title-icon {
+  width: 24px;
+  height: 24px;
+  color: #10b981;
+}
+
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(148, 163, 184, 0.1);
+  border-radius: 12px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.close-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.instructions-content {
+  padding: 1.5rem 2rem 2rem 2rem;
+}
+
+.instructions-intro {
+  font-size: 1.125rem;
+  color: #64748b;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.instructions-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.instruction-step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.step-content {
+  position: relative;
+}
+
+.step-content h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.step-content p {
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.copy-email-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 8px;
+  color: #059669;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+}
+
+.copy-email-btn:hover {
+  background: rgba(16, 185, 129, 0.2);
+  transform: scale(1.05);
+}
+
+.copy-email-btn:hover:not(.copied) {
+  transform: scale(1.05);
+}
+
+.copy-email-btn.copied {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #047857;
+}
+
+.copy-email-btn.copied:hover {
+  transform: none;
+}
+
+.copy-email-btn.success-pulse {
+  animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.copy-email-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Email copy success tooltip */
+.email-copy-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(16, 185, 129, 0.95);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  z-index: 50;
+  opacity: 0;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  animation: tooltipFadeIn 0.2s ease-out forwards;
+}
+
+.email-copy-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-bottom-color: rgba(16, 185, 129, 0.95);
+}
+
+@keyframes tooltipFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
+
+.instructions-footer {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.try-now-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow:
+    0 4px 6px rgba(16, 185, 129, 0.25),
+    0 1px 3px rgba(16, 185, 129, 0.12);
+}
+
+.try-now-btn:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 12px rgba(16, 185, 129, 0.3),
+    0 2px 6px rgba(16, 185, 129, 0.15);
+}
+
+.try-now-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
 /* Animations */
 @keyframes gentleFloat {
   0%, 100% {
@@ -564,6 +1020,26 @@ export default {
   }
 }
 
+@keyframes modalBackdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .empty-state-container {
@@ -599,42 +1075,34 @@ export default {
   .gradient-orb {
     display: none;
   }
-}
 
-/* Reduced Motion Support */
-@media (prefers-reduced-motion: reduce) {
-  .floating-shape,
-  .gradient-orb,
-  .main-icon,
-  .particle,
-  .deco-line,
-  .deco-dot,
-  .icon-backdrop {
-    animation: none;
+  .instructions-modal-backdrop {
+    padding: 1rem;
   }
 
-  .primary-action-btn:hover,
-  .secondary-action-btn:hover {
-    transform: none;
-  }
-}
-
-/* High Contrast Mode */
-@media (prefers-contrast: high) {
-  .empty-state-container {
-    background: white;
-    border: 2px solid black;
+  .instructions-modal {
+    border-radius: 16px;
   }
 
-  .title-primary {
-    color: black;
-    -webkit-text-fill-color: black;
+  .instructions-header {
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
   }
 
-  .floating-shape,
-  .gradient-orb,
-  .decorative-elements {
-    display: none;
+  .instructions-title {
+    font-size: 1.25rem;
+  }
+
+  .instructions-content {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+  }
+
+  .instruction-step {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .step-number {
+    align-self: flex-start;
   }
 }
 
@@ -681,5 +1149,101 @@ export default {
   .cta-text {
     color: #94a3b8;
   }
+
+  .instructions-modal {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+    border-color: rgba(71, 85, 105, 0.3);
+  }
+
+  .instructions-header {
+    border-bottom-color: rgba(71, 85, 105, 0.2);
+  }
+
+  .instructions-title {
+    color: #e2e8f0;
+  }
+
+  .close-btn {
+    background: rgba(71, 85, 105, 0.2);
+    color: #94a3b8;
+  }
+
+  .close-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+  }
+
+  .instructions-intro,
+  .step-content p {
+    color: #94a3b8;
+  }
+
+  .step-content h4 {
+    color: #e2e8f0;
+  }
+
+  .copy-email-btn {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #10b981;
+  }
+
+  .copy-email-btn:hover {
+    background: rgba(16, 185, 129, 0.3);
+  }
+
+  .instructions-footer {
+    border-top-color: rgba(71, 85, 105, 0.2);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .floating-shape,
+  .gradient-orb,
+  .main-icon,
+  .particle,
+  .deco-line,
+  .deco-dot,
+  .icon-backdrop {
+    animation: none;
+  }
+
+  .primary-action-btn:hover,
+  .secondary-action-btn:hover {
+    transform: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .empty-state-container {
+    background: white;
+    border: 2px solid black;
+  }
+
+  .title-primary {
+    color: black;
+    -webkit-text-fill-color: black;
+  }
+
+  .floating-shape,
+  .gradient-orb,
+  .decorative-elements {
+    display: none;
+  }
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 </style>

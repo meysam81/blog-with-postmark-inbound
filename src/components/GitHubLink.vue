@@ -233,6 +233,7 @@ export default {
   pointer-events: none;
   transition: all 0.3s ease;
   margin-bottom: 8px;
+  z-index: 9999;
 }
 
 .tooltip::after {

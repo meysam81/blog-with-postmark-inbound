@@ -36,8 +36,8 @@
           </div>
 
           <div class="btn-text">
-            <span class="btn-main-text">Send an Email</span>
-            <span class="btn-sub-text">Get a blog post instantly</span>
+            <span class="btn-main-text">Start Publishing</span>
+            <span class="btn-sub-text">Send an email, get a blog post</span>
           </div>
 
           <div class="btn-arrow" aria-hidden="true">
@@ -94,10 +94,10 @@
 
             <div class="header-text">
               <h3 id="publishInfoTitle" class="panel-title">
-                Email to Blog in Two Steps
+                Email Publishing Made Simple
               </h3>
               <p id="publishInfoDescription" class="panel-description">
-                Send an email, get a blog post. No registration, no complex setup.
+                Transform any email into a beautiful blog post instantly. No registration required.
               </p>
             </div>
           </header>
@@ -120,15 +120,15 @@
                 </h4>
 
                 <p class="step-description">
-                  Write your blog post in your favorite email client.
-                  The subject line becomes your post title.
+                  Compose your content in any email client.
+                  The subject becomes your post title, and the body becomes your content.
                 </p>
 
                 <div class="step-highlight">
                   <svg class="highlight-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
                   </svg>
-                  <span>Tip: Support Markdown formatting for rich content!</span>
+                  <span>Tip: Use HTML formatting for rich content and styling!</span>
                 </div>
               </div>
             </div>
@@ -148,7 +148,7 @@
                 </h4>
 
                 <p class="step-description">
-                  Send your email to our blog address and your post goes live instantly.
+                  Send your email to the blog address and watch your content transform into a beautiful blog post instantly.
                 </p>
 
                 <div class="email-container">
@@ -166,14 +166,17 @@
                     <button
                       @click="copyEmailToClipboard"
                       class="copy-btn"
-                      :class="{ 'copied': emailCopied }"
+                      :class="{
+                        'copied': emailCopied,
+                        'success-pulse': emailCopied
+                      }"
                       :title="copyButtonTitle"
                       :aria-label="copyButtonTitle"
                       ref="copyEmailBtn"
                     >
                       <svg
                         v-if="!emailCopied"
-                        class="copy-icon"
+                        class="copy-icon transition-transform duration-200"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -183,7 +186,7 @@
 
                       <svg
                         v-else
-                        class="check-icon"
+                        class="check-icon transition-all duration-200 scale-110"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -191,10 +194,24 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                       </svg>
 
-                      <span class="copy-text">
+                      <span class="copy-text transition-all duration-200">
                         {{ emailCopied ? 'Copied!' : 'Copy' }}
                       </span>
+
+                      <!-- Success ripple effect -->
+                      <div v-if="emailCopied" class="absolute inset-0 bg-white/20 rounded-md animate-ping"></div>
                     </button>
+                  </div>
+
+                  <!-- Success notification -->
+                  <div
+                    v-if="emailCopied"
+                    class="success-notification"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>Email address copied successfully!</span>
                   </div>
 
                   <div class="email-note">
@@ -831,6 +848,8 @@ export default {
   font-weight: var(--font-medium);
   cursor: pointer;
   transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
 }
 
 .copy-btn:hover {
@@ -845,6 +864,25 @@ export default {
 
 .copy-btn.copied {
   background: var(--success-600);
+}
+
+.copy-btn.success-pulse {
+  animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(1) translateY(-1px);
+    box-shadow: 0 0 0 0 var(--success-600);
+  }
+  50% {
+    transform: scale(1.05) translateY(-1px);
+    box-shadow: 0 0 0 10px transparent;
+  }
+  100% {
+    transform: scale(1) translateY(-1px);
+    box-shadow: 0 0 0 0 transparent;
+  }
 }
 
 .copy-icon,
@@ -874,6 +912,43 @@ export default {
   height: 1rem;
   color: var(--info-600);
   flex-shrink: 0;
+}
+
+/* Success notification */
+.success-notification {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--success-50);
+  border: 1px solid var(--success-200);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--success-800);
+  margin-top: 0.75rem;
+  animation: slideInFromTop 0.3s ease-out, fadeOut 0.3s ease-in 1.7s forwards;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
 }
 
 /* Panel Footer */
