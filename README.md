@@ -46,6 +46,7 @@
 <!-- Demo & Documentation -->
 
 [![Demo](https://img.shields.io/badge/🚀_Live_Demo-tarzan.meysam.io-blue?style=for-the-badge)](https://tarzan.meysam.io)
+[![Sponsor](https://img.shields.io/badge/💖_Sponsor_on_GitHub-@meysam81-pink?style=for-the-badge)](https://github.com/sponsors/meysam81)
 
 </div>
 
