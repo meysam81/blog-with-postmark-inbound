@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/gorilla/websocket"
 	"github.com/meysam81/x/httputils"
 
 	"github.com/meysam81/tarzan/cmd/config"
@@ -44,7 +45,14 @@ func Main(frontend embed.FS) {
 		log.Fatalln("Error opening db:", err)
 	}
 
-	app := controllers.AppState{Config: cfg, DS: ds}
+	var upgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin:     func(r *http.Request) bool { return true }, // Allow all origins for simplicity
+	}
+	signal := make(chan uint8)
+
+	app := controllers.AppState{Config: cfg, DS: ds, Upgrader: upgrader, Signal: &signal}
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.SetOutput(os.Stdout)
@@ -68,6 +76,8 @@ func Main(frontend embed.FS) {
 	})
 
 	r.Post("/webhook", httputils.LoggingMiddleware(app.WebhookHandler))
+
+	r.Get("/ws", app.Websocket)
 
 	distFS, err := fs.Sub(frontend, "dist")
 	if err != nil {
@@ -103,7 +113,6 @@ func Main(frontend embed.FS) {
 
 		http.ServeContent(w, r, "/", stat.ModTime(), indexFile.(io.ReadSeeker))
 	})
-	// r.Handle("/*", fileServer)
 
 	log.Println("Server started at:", app.Config.Port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", app.Config.Port), r))

@@ -59,7 +59,6 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	var content string
 	content = email.TextBody
 	if content != "" {
-		log.Println(isMarkdown(content))
 		if isMarkdown(content) {
 			content = convertMarkdownToHtml(content)
 		}
@@ -112,6 +111,9 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed creating post:", http.StatusBadRequest)
 		return
 	}
+
+	log.Println("Notifying the signal for updated list...")
+	*a.Signal <- 1
 
 	w.WriteHeader(http.StatusOK)
 }
