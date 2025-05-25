@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"embed"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/fs"
@@ -29,8 +28,6 @@ func Main(frontend embed.FS) {
 		log.Fatalln(err)
 	}
 
-	authorizedEmails := []string{}
-
 	ctxT, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
@@ -47,7 +44,7 @@ func Main(frontend embed.FS) {
 		log.Fatalln("Error opening db:", err)
 	}
 
-	app := controllers.AppState{Config: cfg, AuthorizedEmails: authorizedEmails, DS: ds}
+	app := controllers.AppState{Config: cfg, DS: ds}
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.SetOutput(os.Stdout)
@@ -55,18 +52,6 @@ func Main(frontend embed.FS) {
 	err = os.MkdirAll(app.GetAttachmentPath(), 0755)
 	if err != nil {
 		log.Fatalf("Error creating attachments directory: %v", err)
-	}
-
-	if _, err := os.Stat(app.Config.AuthorizedEmailsPath); os.IsNotExist(err) {
-		log.Fatalln("Missing authorized email filepath:", err)
-	}
-	content, err := os.ReadFile(app.Config.AuthorizedEmailsPath)
-	if err != nil {
-		log.Fatalln("Failed reading authorized emails", err)
-	}
-	err = json.Unmarshal(content, &app.AuthorizedEmails)
-	if err != nil {
-		log.Fatalln("Error reading authorized emails file:", err)
 	}
 
 	r := chi.NewRouter()

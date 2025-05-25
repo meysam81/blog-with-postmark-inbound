@@ -6,7 +6,6 @@ import (
 )
 
 type AppState struct {
-	Config           *config.Config
-	AuthorizedEmails []string
-	DS               datastore.Datastore
+	Config *config.Config
+	DS     datastore.Datastore
 }

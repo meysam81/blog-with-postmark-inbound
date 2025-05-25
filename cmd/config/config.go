@@ -18,11 +18,12 @@ type cfg struct {
 	RedisPassword string `koanf:"redis.password"`
 	RedisSSL      bool   `koanf:"redis.ssl"`
 
-	DbPath               string `koanf:"dir.db"`
-	StoragePath          string `koanf:"dir.storage"`
-	AuthorizedEmailsPath string `koanf:"dir.authorized-emails"`
+	DbPath      string `koanf:"dir.db"`
+	StoragePath string `koanf:"dir.storage"`
 
 	BaseUrl string `koanf:"base-url"`
+
+	DangerouslyAcceptAllSenders bool `koanf:"dangerously-accept-all-senders"`
 }
 
 type Config = cfg
@@ -35,16 +36,16 @@ func NewConfig() (*Config, error) {
 
 	// default configs if none is proivded from the upstream
 	err = c.Koanf().Load(confmap.Provider(map[string]interface{}{
-		"base-url":              "https://tarzan.meysam.io",
-		"port":                  8000,
-		"auth.username":         "postmarkapp",
-		"auth.password":         "Secr3t!",
-		"redis.host":            "localhost",
-		"redis.port":            6379,
-		"redis.db":              0,
-		"dir.db":                "tarzan.db",
-		"dir.storage":           "storage",
-		"dir.authorized-emails": "deploy/authorized-emails.json",
+		"base-url":                       "https://tarzan.meysam.io",
+		"port":                           8000,
+		"auth.username":                  "postmarkapp",
+		"auth.password":                  "Secr3t!",
+		"redis.host":                     "localhost",
+		"redis.port":                     6379,
+		"redis.db":                       0,
+		"dir.db":                         "tarzan.db",
+		"dir.storage":                    "storage",
+		"dangerously-accept-all-senders": false,
 	}, "."), nil)
 	if err != nil {
 		return nil, err

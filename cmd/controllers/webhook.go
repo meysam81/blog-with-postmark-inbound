@@ -37,21 +37,34 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	authorized := false
-	for _, authEmail := range a.AuthorizedEmails {
-		if email.From == authEmail {
+	if a.Config.DangerouslyAcceptAllSenders {
+		authorized = true
+	} else {
+		verifiedEmail, err := a.DS.FindAuthorizedSenderByEmail(r.Context(), email.From)
+		if err != nil {
+			log.Println("The sender is unauthorized", email.From, err)
+		}
+
+		if verifiedEmail != nil {
 			authorized = true
-			break
 		}
 	}
+
 	if !authorized {
 		log.Printf("Unauthorized sender: %s", email.From)
-		w.WriteHeader(http.StatusForbidden)
+		http.Error(w, "You are not allowed to publish posts", http.StatusForbidden)
 		return
 	}
 
-	content := email.HtmlBody
-	if content == "" {
-		content = email.TextBody
+	var content string
+	content = email.TextBody
+	if content != "" {
+		log.Println(isMarkdown(content))
+		if isMarkdown(content) {
+			content = convertMarkdownToHtml(content)
+		}
+	} else {
+		content = email.HtmlBody
 	}
 
 	contentIDMap := make(map[string]string)
@@ -88,7 +101,12 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		content = strings.ReplaceAll(content, "cid:"+contentID, url)
 	}
 
-	err = a.DS.Insert(r.Context(), &email)
+	err = a.DS.Insert(r.Context(), &models.EmailInsertDB{
+		From:     email.From,
+		FromName: email.FromName,
+		Subject:  email.Subject,
+		Content:  content,
+	})
 	if err != nil {
 		log.Println("Failed inserting to datastore:", err)
 		http.Error(w, "Failed creating post:", http.StatusBadRequest)
