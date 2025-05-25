@@ -25,7 +25,7 @@
 
           <h2 class="text-3xl md:text-5xl font-bold text-slate-100 mb-6">
             <span class="block">Stories That</span>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-blue-300">
               Transcend Boundaries
             </span>
           </h2>

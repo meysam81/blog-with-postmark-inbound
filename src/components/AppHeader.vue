@@ -27,7 +27,7 @@
         <div class="mb-12">
           <h2 class="text-2xl md:text-4xl lg:text-5xl font-bold text-slate-100 leading-tight mb-6">
             <span class="block">Transform Your</span>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400 font-black">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-cyan-300 font-black drop-shadow-sm">
               Inbox
             </span>
             <span class="block">Into a Publishing Powerhouse</span>
