@@ -6,7 +6,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/knadh/koanf/providers/confmap v1.0.0
 	github.com/knadh/koanf/v2 v2.2.0
-	github.com/meysam81/x v1.3.0
+	github.com/meysam81/x v1.3.1
 )
 
 require (
