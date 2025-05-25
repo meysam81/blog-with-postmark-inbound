@@ -9,6 +9,7 @@
   "devDependencies": {
     "@types/bun": "latest",
     "@vitejs/plugin-vue": "^5.2.1",
+    "rollup-plugin-visualizer": "^6.0.0",
     "vite-plugin-minify": "^2.1.0"
   },
   "name": "tarzan",
