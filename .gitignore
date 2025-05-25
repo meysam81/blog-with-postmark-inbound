@@ -35,3 +35,4 @@ storage/
 node_modules/
 dist
 .vite
+.secrets/
