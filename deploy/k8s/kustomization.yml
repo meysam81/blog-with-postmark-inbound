@@ -1,0 +1,25 @@
+configMapGenerator:
+  - name: tarzan-envs
+    envs:
+      - configs.env
+
+resources:
+  - deployment.yml
+  - service.yml
+  - serviceaccount.yml
+
+images:
+  - name: ghcr.io/meysam81/tarzan
+    newTag: latest
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/component: tarzan
+      app.kubernetes.io/instance: tarzan
+      app.kubernetes.io/managed-by: Kustomize
+      app.kubernetes.io/name: tarzan
+      app.kubernetes.io/part-of: tarzan
+      app.kubernetes.io/version: v1.0.0
+
+namespace: default
