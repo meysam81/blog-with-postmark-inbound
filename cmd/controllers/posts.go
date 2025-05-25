@@ -13,6 +13,11 @@ func (a *AppState) GetAttachmentPath() string {
 
 func (a *AppState) ListPosts(w http.ResponseWriter, r *http.Request) {
 	posts, err := a.DS.List(r.Context(), maskEmail)
+	if err != nil {
+		log.Println("Failed listing posts:", err)
+		http.Error(w, "Failed retrieving posts", http.StatusInternalServerError)
+		return
+	}
 
 	response, err := json.Marshal(&posts)
 	if err != nil {

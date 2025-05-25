@@ -3,10 +3,10 @@ package routes
 import (
 	"strings"
 
-	. "github.com/meysam81/tarzan/cmd/models"
+	"github.com/meysam81/tarzan/cmd/models"
 )
 
-func maskEmail(p *Post) {
+func maskEmail(p *models.Post) {
 	at := strings.Index(p.AuthorEmail, "@")
 	if at <= 1 {
 		p.AuthorEmail = "***"

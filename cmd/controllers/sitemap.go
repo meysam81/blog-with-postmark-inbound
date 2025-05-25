@@ -74,6 +74,10 @@ func (a *AppState) SitemapHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte(xml.Header))
-	w.Write(xmlData)
+	if _, err := w.Write([]byte(xml.Header)); err != nil {
+		return
+	}
+	if _, err := w.Write(xmlData); err != nil {
+		return
+	}
 }

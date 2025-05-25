@@ -5,10 +5,10 @@ import (
 	"log"
 	"time"
 
-	. "github.com/meysam81/tarzan/cmd/models"
+	"github.com/meysam81/tarzan/cmd/models"
 )
 
-func (s *Sqlite) List(ctx context.Context, transformers ...func(*Post)) (*[]Post, error) {
+func (s *Sqlite) List(ctx context.Context, transformers ...func(*models.Post)) (*[]models.Post, error) {
 	ctxT, cancelT := context.WithTimeout(ctx, 3*time.Second)
 	defer cancelT()
 	rows, err := s.DB.QueryContext(ctxT, "SELECT id, title, content, author_email, created_at FROM posts ORDER BY created_at DESC")
@@ -21,9 +21,9 @@ func (s *Sqlite) List(ctx context.Context, transformers ...func(*Post)) (*[]Post
 		}
 	}()
 
-	var posts []Post
+	var posts []models.Post
 	for rows.Next() {
-		var p Post
+		var p models.Post
 		if err := rows.Scan(&p.ID, &p.Title, &p.Content, &p.AuthorEmail, &p.CreatedAt); err != nil {
 			log.Printf("Error scanning post: %v", err)
 			continue
@@ -37,7 +37,7 @@ func (s *Sqlite) List(ctx context.Context, transformers ...func(*Post)) (*[]Post
 	return &posts, nil
 }
 
-func (s *Sqlite) Insert(ctx context.Context, email *InboundEmail) error {
+func (s *Sqlite) Insert(ctx context.Context, email *models.InboundEmail) error {
 	content := email.HtmlBody
 	if content == "" {
 		content = email.TextBody

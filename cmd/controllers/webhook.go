@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	. "github.com/meysam81/tarzan/cmd/models"
+	"github.com/meysam81/tarzan/cmd/models"
 )
 
 func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +29,7 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var email InboundEmail
+	var email models.InboundEmail
 	if err := json.Unmarshal(body, &email); err != nil {
 		log.Printf("Error parsing JSON: %v", err)
 		http.Error(w, "Invalid json format in body", http.StatusBadRequest)

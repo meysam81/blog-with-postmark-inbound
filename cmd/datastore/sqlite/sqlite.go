@@ -14,9 +14,11 @@ func (b *Builder) NewDatastore(ctx context.Context, cfg *config.Config) (*Sqlite
 		return nil, err
 	}
 
-	db.runMigrations(ctx)
+	if err := db.runMigrations(ctx); err != nil {
+		return nil, err
+	}
 
-	return db, err
+	return db, nil
 }
 
 func createDB(ctx context.Context, cfg *config.Config) (*Sqlite, error) {

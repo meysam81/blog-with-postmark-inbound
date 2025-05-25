@@ -36,7 +36,11 @@ func Main(frontend embed.FS) {
 	sqliteBuilder := &sqlite.Builder{}
 
 	ds, err := sqliteBuilder.NewDatastore(ctxT, cfg)
-	defer ds.Close()
+	defer func() {
+		if err := ds.Close(); err != nil {
+			log.Printf("Error closing datastore: %v", err)
+		}
+	}()
 
 	if err != nil {
 		log.Fatalln("Error opening db:", err)
