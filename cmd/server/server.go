@@ -26,8 +26,6 @@ func Main(frontend embed.FS) {
 		log.Fatalln(err)
 	}
 
-	fmt.Println(cfg.BaseUrl)
-
 	authorizedEmails := []string{}
 
 	ctxT, cancel := context.WithTimeout(ctx, 3*time.Second)
