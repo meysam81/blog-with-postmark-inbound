@@ -5,12 +5,15 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/fs"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/meysam81/x/httputils"
 
 	"github.com/meysam81/tarzan/cmd/config"
@@ -66,20 +69,57 @@ func Main(frontend embed.FS) {
 		log.Fatalln("Error reading authorized emails file:", err)
 	}
 
-	http.HandleFunc("/sitemap.xml", httputils.LoggingMiddleware(app.SitemapHandler))
-	http.HandleFunc("/rss.xml", httputils.LoggingMiddleware(app.RSSHandler))
+	r := chi.NewRouter()
 
-	http.HandleFunc("/api/posts", httputils.LoggingMiddleware(app.ListPosts))
-	http.HandleFunc("/webhook", httputils.LoggingMiddleware(app.WebhookHandler))
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
 
-	http.Handle("/api/assets/", http.StripPrefix("/api/assets/", http.FileServer(http.Dir(app.Config.StoragePath))))
+	r.Get("/sitemap.xml", httputils.LoggingMiddleware(app.SitemapHandler))
+	r.Get("/rss.xml", httputils.LoggingMiddleware(app.RSSHandler))
+
+	r.Route("/api", func(r chi.Router) {
+		r.Get("/posts", httputils.LoggingMiddleware(app.ListPosts))
+		r.Handle("/assets/*", http.StripPrefix("/api/assets/", http.FileServer(http.Dir(app.Config.StoragePath))))
+	})
+
+	r.Post("/webhook", httputils.LoggingMiddleware(app.WebhookHandler))
+
 	distFS, err := fs.Sub(frontend, "dist")
 	if err != nil {
 		log.Fatal("Error creating subdirectory filesystem:", err)
 	}
 
-	http.Handle("/", http.FileServer(http.FS(distFS)))
+	// SPA hack: serve the static files first and fallback to index.html
+	fileServer := http.FileServer(http.FS(distFS))
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		file, err := distFS.Open(r.URL.Path[1:])
+		if err == nil {
+			defer file.Close()
+			if stat, err := file.Stat(); err == nil && !stat.IsDir() {
+				http.ServeContent(w, r, r.URL.Path, stat.ModTime(), file.(io.ReadSeeker))
+				return
+			}
+		}
+
+		indexFile, err := distFS.Open("index.html")
+		defer indexFile.Close()
+
+		if err != nil {
+			log.Println("Error reading index.html", err)
+			http.Error(w, "Page not found", http.StatusNotFound)
+			return
+		}
+
+		stat, err := indexFile.Stat()
+		if err != nil {
+			fileServer.ServeHTTP(w, r)
+			return
+		}
+
+		http.ServeContent(w, r, "/", stat.ModTime(), indexFile.(io.ReadSeeker))
+	})
+	// r.Handle("/*", fileServer)
 
 	log.Println("Server started at:", app.Config.Port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", app.Config.Port), nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", app.Config.Port), r))
 }

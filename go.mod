@@ -3,6 +3,7 @@ module github.com/meysam81/tarzan
 go 1.24.2
 
 require (
+	github.com/go-chi/chi/v5 v5.2.1
 	github.com/google/uuid v1.6.0
 	github.com/knadh/koanf/providers/confmap v1.0.0
 	github.com/knadh/koanf/v2 v2.2.0
