@@ -19,6 +19,7 @@ import (
 	"github.com/meysam81/tarzan/cmd/config"
 	"github.com/meysam81/tarzan/cmd/controllers"
 	"github.com/meysam81/tarzan/cmd/datastore/sqlite"
+	"github.com/meysam81/tarzan/cmd/filestore/filesystem"
 )
 
 func Main(frontend embed.FS) {
@@ -33,6 +34,7 @@ func Main(frontend embed.FS) {
 	defer cancel()
 
 	sqliteBuilder := &sqlite.Builder{}
+	filesystemBuilder := &filesystem.FilesystemBuilder{}
 
 	ds, err := sqliteBuilder.NewDatastore(ctxT, cfg)
 	defer func() {
@@ -52,15 +54,18 @@ func Main(frontend embed.FS) {
 	}
 	signal := make(chan uint8)
 
-	app := controllers.AppState{Config: cfg, DS: ds, Upgrader: upgrader, Signal: &signal}
+	ctxT, cancel = context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	filestore, err := filesystemBuilder.NewFilestore(ctxT, cfg)
+	if err != nil {
+		log.Fatalln("Failed initializing filestore")
+	}
+
+	app := controllers.AppState{Config: cfg, DS: ds, Upgrader: upgrader, Signal: &signal, Filestore: filestore}
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.SetOutput(os.Stdout)
-
-	err = os.MkdirAll(app.GetAttachmentPath(), 0755)
-	if err != nil {
-		log.Fatalf("Error creating attachments directory: %v", err)
-	}
 
 	r := chi.NewRouter()
 

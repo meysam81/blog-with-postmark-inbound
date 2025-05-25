@@ -1,16 +1,12 @@
 package controllers
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"io"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strings"
 
-	"github.com/google/uuid"
 	"github.com/meysam81/tarzan/cmd/models"
 )
 
@@ -70,12 +66,6 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	for _, att := range email.Attachments {
 		if att.ContentID != "" {
 
-			data, err := base64.StdEncoding.DecodeString(att.Content)
-			if err != nil {
-				log.Printf("Error decoding attachment %s: %v", att.Name, err)
-				continue
-			}
-
 			ext := ".bin"
 			if strings.HasPrefix(att.ContentType, "image/png") {
 				ext = ".png"
@@ -83,12 +73,9 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 				ext = ".jpg"
 			}
 
-			filename := uuid.New().String() + ext
-			filepath := filepath.Join(a.GetAttachmentPath(), filename)
-
-			if err := os.WriteFile(filepath, data, 0644); err != nil {
-				log.Printf("Error saving attachment %s: %v", att.Name, err)
-				http.Error(w, "Error occurred while saving your attachments", http.StatusBadRequest)
+			filename, err := a.Filestore.Save(att.Content, ext)
+			if err != nil {
+				log.Println("Failed saving attachment:", err)
 				continue
 			}
 
