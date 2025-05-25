@@ -14,7 +14,7 @@ import (
 	"github.com/meysam81/x/httputils"
 
 	"github.com/meysam81/tarzan/cmd/config"
-	. "github.com/meysam81/tarzan/cmd/controllers"
+	"github.com/meysam81/tarzan/cmd/controllers"
 	"github.com/meysam81/tarzan/cmd/datastore/sqlite"
 )
 
@@ -46,7 +46,7 @@ func Main(frontend embed.FS) {
 		log.Fatalln("Error opening db:", err)
 	}
 
-	app := AppState{Config: cfg, AuthorizedEmails: authorizedEmails, DS: ds}
+	app := controllers.AppState{Config: cfg, AuthorizedEmails: authorizedEmails, DS: ds}
 
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.SetOutput(os.Stdout)

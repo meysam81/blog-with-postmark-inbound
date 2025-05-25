@@ -1,4 +1,4 @@
-package routes
+package controllers
 
 import (
 	"encoding/base64"

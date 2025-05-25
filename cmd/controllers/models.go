@@ -1,4 +1,4 @@
-package routes
+package controllers
 
 import (
 	"github.com/meysam81/tarzan/cmd/config"
