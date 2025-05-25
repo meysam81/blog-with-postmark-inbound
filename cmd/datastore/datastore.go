@@ -8,8 +8,8 @@ import (
 )
 
 type Datastore interface {
-	List(context.Context, ...func(*models.Post)) (*[]models.Post, error)
-	Insert(context.Context, *models.EmailInsertDB) error
+	ListPosts(context.Context, ...func(*models.Post)) (*[]models.Post, error)
+	InsertEmail(context.Context, *models.EmailInsertDB) error
 	FindAuthorizedSenderByEmail(ctx context.Context, email string) (*models.AuthorizedSender, error)
 	Close() error
 }

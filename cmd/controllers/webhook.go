@@ -87,7 +87,7 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		content = strings.ReplaceAll(content, "cid:"+contentID, url)
 	}
 
-	err = a.DS.Insert(r.Context(), &models.EmailInsertDB{
+	err = a.DS.InsertEmail(r.Context(), &models.EmailInsertDB{
 		From:     email.From,
 		FromName: email.FromName,
 		Subject:  email.Subject,

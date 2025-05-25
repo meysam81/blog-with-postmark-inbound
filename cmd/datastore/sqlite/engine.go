@@ -8,7 +8,7 @@ import (
 	"github.com/meysam81/tarzan/cmd/models"
 )
 
-func (s *Sqlite) List(ctx context.Context, transformers ...func(*models.Post)) (*[]models.Post, error) {
+func (s *Sqlite) ListPosts(ctx context.Context, transformers ...func(*models.Post)) (*[]models.Post, error) {
 	ctxT, cancelT := context.WithTimeout(ctx, 3*time.Second)
 	defer cancelT()
 	rows, err := s.DB.QueryContext(ctxT, "SELECT id, title, content, author_email, author_name, created_at FROM posts ORDER BY created_at DESC")
@@ -37,7 +37,7 @@ func (s *Sqlite) List(ctx context.Context, transformers ...func(*models.Post)) (
 	return &posts, nil
 }
 
-func (s *Sqlite) Insert(ctx context.Context, email *models.EmailInsertDB) error {
+func (s *Sqlite) InsertEmail(ctx context.Context, email *models.EmailInsertDB) error {
 	ctxT, cancelT := context.WithTimeout(ctx, 3*time.Second)
 	defer cancelT()
 

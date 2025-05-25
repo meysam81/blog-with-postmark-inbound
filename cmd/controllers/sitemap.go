@@ -21,7 +21,7 @@ type URL struct {
 }
 
 func (a *AppState) SitemapHandler(w http.ResponseWriter, r *http.Request) {
-	posts, err := a.DS.List(r.Context())
+	posts, err := a.DS.ListPosts(r.Context())
 	if err != nil {
 		http.Error(w, "Error generating sitemap", http.StatusInternalServerError)
 		return

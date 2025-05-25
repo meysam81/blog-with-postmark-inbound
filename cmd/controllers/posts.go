@@ -7,7 +7,7 @@ import (
 )
 
 func (a *AppState) ListPosts(w http.ResponseWriter, r *http.Request) {
-	posts, err := a.DS.List(r.Context(), maskEmail)
+	posts, err := a.DS.ListPosts(r.Context(), maskEmail)
 	if err != nil {
 		log.Println("Failed listing posts:", err)
 		http.Error(w, "Failed retrieving posts", http.StatusInternalServerError)
