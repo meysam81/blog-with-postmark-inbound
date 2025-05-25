@@ -19,7 +19,6 @@ func (*Builder) NewFilestore(ctx context.Context, cfg *config.Config) (filestore
 
 	rf := &redisFilestore{client: client}
 
-	// Run any necessary setup/migrations
 	if err := rf.runMigrations(ctx); err != nil {
 		return nil, err
 	}
@@ -44,7 +43,7 @@ func newRedisClient(cfg *config.Config) (*redis.Client, error) {
 }
 
 func (r *redisFilestore) runMigrations(ctx context.Context) error {
-	// Test the connection by pinging Redis
+
 	if err := r.client.Ping(ctx).Err(); err != nil {
 		return fmt.Errorf("failed to connect to Redis during migration: %w", err)
 	}
@@ -52,14 +51,11 @@ func (r *redisFilestore) runMigrations(ctx context.Context) error {
 }
 
 func (r *redisFilestore) Save(content, ext string) (string, error) {
-	// Generate a unique filename
+
 	filename := uuid.New().String() + ext
 
-	// Use a key prefix to organize files in Redis
 	key := fmt.Sprintf("filestore:attachment:%s", filename)
 
-	// Store the base64 content directly in Redis as a string
-	// Redis can handle base64 strings efficiently
 	ctx := context.Background()
 	if err := r.client.Set(ctx, key, content, 0).Err(); err != nil {
 		return "", fmt.Errorf("failed to save file to Redis: %w", err)
@@ -69,10 +65,9 @@ func (r *redisFilestore) Save(content, ext string) (string, error) {
 }
 
 func (r *redisFilestore) Load(filename string) (string, error) {
-	// Construct the Redis key
+
 	key := fmt.Sprintf("filestore:attachment:%s", filename)
 
-	// Retrieve the base64 content from Redis
 	ctx := context.Background()
 	content, err := r.client.Get(ctx, key).Result()
 	if err != nil {
