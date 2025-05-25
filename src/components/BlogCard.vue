@@ -28,7 +28,7 @@
           :id="`blog-title-${post.id || index}`"
           class="card-title"
         >
-          {{ post.title }}
+          {{ post.title || 'Untitled Post' }}
         </h2>
       </header>
 
@@ -36,7 +36,7 @@
       <div class="card-main-content">
         <div
           class="prose-content"
-          v-html="post.content"
+          v-html="post.content || 'No content available.'"
           :aria-describedby="`blog-meta-${post.id || index}`"
         >
         </div>
@@ -57,7 +57,7 @@
           </div>
 
           <div class="author-details">
-            <p class="author-email">{{ post['author-email'] }}</p>
+            <p class="author-email">{{ post['author-email'] || 'Unknown Author' }}</p>
             <time
               class="publish-date"
               :datetime="formatISODate(post['created-at'])"
@@ -101,11 +101,17 @@ export default {
   props: {
     post: {
       type: Object,
-      required: true
+      required: true,
+      validator(value) {
+        return value && typeof value === 'object'
+      }
     },
     index: {
       type: Number,
-      default: 0
+      default: 0,
+      validator(value) {
+        return value >= 0
+      }
     }
   },
   setup(props) {
@@ -122,7 +128,6 @@ export default {
     function handleReadMore() {
       // Emit event or navigate to full post
       // This can be expanded based on routing requirements
-      console.log('Read more clicked for:', props.post.title)
     }
 
     return {
@@ -265,17 +270,17 @@ export default {
   color: #1e293b;
   margin: 0;
   background: linear-gradient(135deg, #1e293b, #475569);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
   transition: all 0.3s ease;
 }
 
 .blog-card:hover .card-title {
   background: linear-gradient(135deg, #059669, #3b82f6);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* Content Section */
@@ -574,6 +579,7 @@ export default {
   .card-title {
     color: #e2e8f0;
     background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }

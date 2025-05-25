@@ -17,7 +17,7 @@
   "private": true,
   "scripts": {
     "build": "vite build",
-    "lint": "eslint .",
+    "lint": "oxlint --fix --fix-suggestions",
     "preview": "vite preview",
     "start": "vite"
   },
