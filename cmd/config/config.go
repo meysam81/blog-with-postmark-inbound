@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+
 	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/v2"
 	"github.com/meysam81/x/config"
@@ -18,6 +20,8 @@ type cfg struct {
 	RedisPassword string `koanf:"redis.password"`
 	RedisSSL      bool   `koanf:"redis.ssl"`
 
+	DataStore string `koanf:"datastore"`
+
 	DbPath      string `koanf:"dir.db"`
 	StoragePath string `koanf:"dir.storage"`
 
@@ -27,6 +31,13 @@ type cfg struct {
 }
 
 type Config = cfg
+
+func (c *cfg) validate() error {
+	if c.DataStore != "sqlite" && c.DataStore != "redis" {
+		return fmt.Errorf("invalid datastore: %s, must be either 'sqlite' or 'redis'", c.DataStore)
+	}
+	return nil
+}
 
 func NewConfig() (*Config, error) {
 	c, err := config.NewConfig(config.WithEnvPrefix("TARZAN_"))
@@ -46,6 +57,7 @@ func NewConfig() (*Config, error) {
 		"dir.db":                         "tarzan.db",
 		"dir.storage":                    "storage",
 		"dangerously-accept-all-senders": false,
+		"datastore":                      "sqlite",
 	}, "."), nil)
 	if err != nil {
 		return nil, err
@@ -61,6 +73,10 @@ func NewConfig() (*Config, error) {
 
 	err = c.Koanf().UnmarshalWithConf("", &settings, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true})
 	if err != nil {
+		return nil, err
+	}
+
+	if err := settings.validate(); err != nil {
 		return nil, err
 	}
 

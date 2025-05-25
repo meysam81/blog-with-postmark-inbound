@@ -10,7 +10,7 @@ import (
 	"github.com/meysam81/tarzan/cmd/config"
 )
 
-func (*FilesystemBuilder) NewFilestore(ctx context.Context, cfg *config.Config) (*fileSystem, error) {
+func (*Builder) NewFilestore(ctx context.Context, cfg *config.Config) (*fileSystem, error) {
 	attachmentPath := filepath.Join(cfg.StoragePath, "attachments")
 	fs := &fileSystem{AttachmentPath: attachmentPath}
 	err := fs.runMigrations()

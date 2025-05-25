@@ -4,4 +4,4 @@ type fileSystem struct {
 	AttachmentPath string
 }
 
-type FilesystemBuilder struct{}
+type Builder struct{}

@@ -5,10 +5,11 @@ import (
 	"time"
 
 	"github.com/meysam81/tarzan/cmd/config"
+	"github.com/meysam81/tarzan/cmd/datastore"
 	"github.com/meysam81/x/sqlite"
 )
 
-func (b *Builder) NewDatastore(ctx context.Context, cfg *config.Config) (*Sqlite, error) {
+func (b *Builder) NewDatastore(ctx context.Context, cfg *config.Config) (datastore.Datastore, error) {
 	db, err := createDB(ctx, cfg)
 	if err != nil {
 		return nil, err

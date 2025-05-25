@@ -18,6 +18,8 @@ import (
 
 	"github.com/meysam81/tarzan/cmd/config"
 	"github.com/meysam81/tarzan/cmd/controllers"
+	"github.com/meysam81/tarzan/cmd/datastore"
+	"github.com/meysam81/tarzan/cmd/datastore/redis"
 	"github.com/meysam81/tarzan/cmd/datastore/sqlite"
 	"github.com/meysam81/tarzan/cmd/filestore/filesystem"
 )
@@ -33,19 +35,23 @@ func Main(frontend embed.FS) {
 	ctxT, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	sqliteBuilder := &sqlite.Builder{}
-	filesystemBuilder := &filesystem.FilesystemBuilder{}
+	datastoreBuilder := map[string]datastore.BuildDatastore{
+		"sqlite": &sqlite.Builder{},
+		"redis":  &redis.Builder{},
+	}[cfg.DataStore]
+	filesystemBuilder := &filesystem.Builder{}
 
-	ds, err := sqliteBuilder.NewDatastore(ctxT, cfg)
-	defer func() {
-		if err := ds.Close(); err != nil {
-			log.Printf("Error closing datastore: %v", err)
-		}
-	}()
-
+	ds, err := datastoreBuilder.NewDatastore(ctxT, cfg)
 	if err != nil {
 		log.Fatalln("Error opening db:", err)
 	}
+	defer func() {
+		if ds != nil {
+			if err := ds.Close(); err != nil {
+				log.Printf("Error closing datastore: %v", err)
+			}
+		}
+	}()
 
 	var upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
