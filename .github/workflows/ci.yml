@@ -21,10 +21,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 1.24
-      - name: Create dummy dist
-        run: |
-          mkdir dist
-          touch dist/index.html
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v8
         with:
@@ -47,10 +43,6 @@ jobs:
           echo "PATH=$INSTALL_DIR/hurl-$VERSION-x86_64-unknown-linux-gnu/bin:$PATH" >> "$GITHUB_ENV"
       - name: Install dependencies
         run: go mod tidy
-      - name: Create dummy dist
-        run: |
-          mkdir dist
-          touch dist/index.html
       - name: Build the server
         run: go build -o tarzan
       - name: Run server in background

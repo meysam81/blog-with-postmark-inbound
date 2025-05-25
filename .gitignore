@@ -33,7 +33,8 @@ tarzan
 .envrc
 storage/
 node_modules/
-dist
+dist/*
+!dist/.gitkeep
 .vite
 .secrets/
 .lycheecache
