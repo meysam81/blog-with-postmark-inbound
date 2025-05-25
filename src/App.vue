@@ -25,9 +25,6 @@
       <!-- Footer -->
       <AppFooter />
 
-      <!-- Floating Publish Button -->
-      <PublishButton />
-
       <!-- Scroll Progress Indicator -->
       <ScrollProgress />
     </ErrorBoundary>
@@ -39,7 +36,6 @@ import SkipLink from '@/components/SkipLink.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import MainContent from '@/components/MainContent.vue'
 import AppFooter from '@/components/AppFooter.vue'
-import PublishButton from '@/components/PublishButton.vue'
 import ScrollProgress from '@/components/ScrollProgress.vue'
 import ErrorBoundary from '@/components/ErrorBoundary.vue'
 import { useAccessibility } from '@/utils/accessibility.js'
@@ -54,7 +50,6 @@ export default {
     AppHeader,
     MainContent,
     AppFooter,
-    PublishButton,
     ScrollProgress,
     ErrorBoundary
   },

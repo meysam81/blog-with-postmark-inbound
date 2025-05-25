@@ -37,6 +37,36 @@
             Experience the revolution in content creation. No interfaces, no complexity—just pure literary freedom through the elegance of email.
           </p>
 
+          <!-- Publishing Instructions -->
+          <div class="bg-gradient-to-r from-emerald-900/30 to-blue-900/30 backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-6 mb-10 max-w-2xl mx-auto">
+            <div class="flex items-center justify-center gap-3 mb-4">
+              <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+              <h3 class="text-lg font-semibold text-emerald-300">Dead Simple Publishing</h3>
+              <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+            </div>
+
+            <p class="text-slate-200 mb-4 leading-relaxed">
+              Send an email to <strong class="text-emerald-300 font-mono">blog@tarzan.meysam.io</strong> and see your content live in seconds
+            </p>
+
+            <div class="flex items-center justify-center gap-2">
+              <button
+                @click="copyEmailAddress"
+                :class="{ 'copied': emailCopied }"
+                class="group inline-flex items-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105"
+                :aria-label="emailCopied ? 'Email address copied!' : 'Copy email address'"
+              >
+                <svg v-if="!emailCopied" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                <span>{{ emailCopied ? 'Copied!' : 'Copy Address' }}</span>
+              </button>
+            </div>
+          </div>
+
           <!-- Feature Highlights -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto text-sm">
             <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4">
@@ -103,6 +133,7 @@
 </template>
 
 <script>
+import { ref } from 'vue'
 import GitHubLink from './GitHubLink.vue'
 import TitleAnimation from './TitleAnimation.vue'
 
@@ -112,8 +143,11 @@ export default {
     GitHubLink,
     TitleAnimation
   },
-  methods: {
-    scrollToContent() {
+  setup() {
+    var emailCopied = ref(false)
+    var emailAddress = 'blog@tarzan.meysam.io'
+
+    function scrollToContent() {
       var mainContent = document.getElementById('main-content')
       if (mainContent) {
         mainContent.scrollIntoView({
@@ -122,6 +156,64 @@ export default {
         })
       }
     }
+
+    async function copyEmailAddress() {
+      try {
+        await navigator.clipboard.writeText(emailAddress)
+        emailCopied.value = true
+
+        setTimeout(function resetCopyState() {
+          emailCopied.value = false
+        }, 2000)
+
+        var announcement = document.createElement("div")
+        announcement.setAttribute("aria-live", "polite")
+        announcement.className = "sr-only"
+        announcement.textContent = "Email address copied to clipboard"
+        document.body.appendChild(announcement)
+
+        setTimeout(function removeAnnouncement() {
+          document.body.removeChild(announcement)
+        }, 3000)
+      } catch (error) {
+        try {
+          var textArea = document.createElement("textarea")
+          textArea.value = emailAddress
+          document.body.appendChild(textArea)
+          textArea.select()
+          document.execCommand('copy')
+          document.body.removeChild(textArea)
+
+          emailCopied.value = true
+          setTimeout(function resetFallbackCopyState() {
+            emailCopied.value = false
+          }, 2000)
+        } catch (fallbackError) {
+          // Silently fail for production
+        }
+      }
+    }
+
+    return {
+      emailCopied,
+      scrollToContent,
+      copyEmailAddress
+    }
   }
 }
 </script>
+
+<style scoped>
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+</style>
