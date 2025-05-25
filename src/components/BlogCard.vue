@@ -94,6 +94,7 @@
 
 <script>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { formatISODate, formatReadableDate, getAuthorInitial } from '@/utils/api.js'
 
 export default {
@@ -116,6 +117,7 @@ export default {
   },
   setup(props) {
     var isHovered = ref(false)
+    var router = useRouter()
 
     function handleMouseEnter() {
       isHovered.value = true
@@ -126,8 +128,13 @@ export default {
     }
 
     function handleReadMore() {
-      // Emit event or navigate to full post
-      // This can be expanded based on routing requirements
+      // Navigate to the individual blog post page
+      if (props.post.id) {
+        router.push({ name: 'BlogPost', params: { id: props.post.id } })
+      } else {
+        // Fallback: use array index if no ID is available
+        router.push({ name: 'BlogPost', params: { id: props.index.toString() } })
+      }
     }
 
     return {

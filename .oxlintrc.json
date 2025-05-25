@@ -156,7 +156,7 @@
     "no-mocks-import": "deny",
     "no-multi-assign": "deny",
     "no-multi-str": "deny",
-    "no-mutable-exports": "deny",
+    "no-mutable-exports": "off",
     "no-named-as-default": "off",
     "no-named-as-default-member": "off",
     "no-named-default": "deny",

@@ -16,14 +16,8 @@
 
     <!-- Global Error Boundary -->
     <ErrorBoundary @error="handleGlobalError" @retry="handleGlobalRetry">
-      <!-- Header -->
-      <AppHeader />
-
-      <!-- Main Content -->
-      <MainContent />
-
-      <!-- Footer -->
-      <AppFooter />
+      <!-- Router View -->
+      <router-view />
 
       <!-- Scroll Progress Indicator -->
       <ScrollProgress />
@@ -33,9 +27,6 @@
 
 <script>
 import SkipLink from '@/components/SkipLink.vue'
-import AppHeader from '@/components/AppHeader.vue'
-import MainContent from '@/components/MainContent.vue'
-import AppFooter from '@/components/AppFooter.vue'
 import ScrollProgress from '@/components/ScrollProgress.vue'
 import ErrorBoundary from '@/components/ErrorBoundary.vue'
 import { useAccessibility } from '@/utils/accessibility.js'
@@ -47,9 +38,6 @@ export default {
   name: 'App',
   components: {
     SkipLink,
-    AppHeader,
-    MainContent,
-    AppFooter,
     ScrollProgress,
     ErrorBoundary
   },

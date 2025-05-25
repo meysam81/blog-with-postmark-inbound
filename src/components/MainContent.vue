@@ -114,14 +114,14 @@
               Your voice matters. Your stories deserve to be heard. Break free from traditional publishing constraints and let your words swing free with Tarzan.
             </p>
             <button
-              @click="scrollToPublishButton"
+              @click="scrollToTop"
               class="group bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-400 hover:to-blue-400 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/25"
-              aria-label="Start publishing your content"
+              aria-label="Scroll to publishing instructions"
             >
               <span class="flex items-center gap-2">
-                Start Your Journey
-                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                Start Publishing
+                <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l4-4m0 0l4 4m-4-4v18"></path>
                 </svg>
               </span>
             </button>
@@ -203,34 +203,43 @@ export default {
       loadPosts()
     }
 
-    function scrollToPublishButton() {
+    function scrollToTop() {
       try {
-        var publishButton = document.querySelector('.publish-btn')
-        if (publishButton) {
-          publishButton.scrollIntoView({
+        // First try to scroll to the publishing instructions in the header
+        var publishingInstructions = document.querySelector('[aria-label="Publishing instructions"]')
+        if (publishingInstructions) {
+          publishingInstructions.scrollIntoView({
             behavior: 'smooth',
-            block: 'center'
+            block: 'start'
           })
-          // Add focus for accessibility
-          publishButton.focus()
-        } else {
-          log.warn("Publish button not found in DOM")
+          publishingInstructions.focus()
+          log.debug('Scrolled to publishing instructions')
+          return
         }
+
+        // Fallback: scroll to the top of the page where header with instructions is
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        })
+        log.debug('Scrolled to top of page')
+
+        // Add accessibility announcement
+        var announcement = document.createElement('div')
+        announcement.setAttribute('aria-live', 'polite')
+        announcement.className = 'sr-only'
+        announcement.textContent = 'Scrolled to publishing instructions at the top of the page'
+        document.body.appendChild(announcement)
+
+        setTimeout(function removeAnnouncement() {
+          document.body.removeChild(announcement)
+        }, 3000)
+
       } catch (error) {
-        log.error("Error scrolling to publish button:", error)
+        log.error('Error scrolling to publishing instructions:', error)
+        // Fallback: just scroll to top
+        window.scrollTo(0, 0)
       }
-    }
-
-    function handleErrorRetry() {
-      retryLoadPosts()
-    }
-
-    function handleOnlineEvent() {
-      isOnline.value = true
-    }
-
-    function handleOfflineEvent() {
-      isOnline.value = false
     }
 
     function handleErrorRetry() {
@@ -248,7 +257,7 @@ export default {
       errorMessage,
       retryCount,
       maxRetries,
-      scrollToPublishButton,
+      scrollToTop,
       retryLoadPosts,
       isOnline,
       handleErrorRetry

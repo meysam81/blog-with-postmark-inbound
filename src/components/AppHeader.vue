@@ -38,7 +38,11 @@
           </p>
 
           <!-- Publishing Instructions -->
-          <div class="bg-gradient-to-r from-emerald-900/30 to-blue-900/30 backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-6 mb-10 max-w-2xl mx-auto">
+          <div
+            class="bg-gradient-to-r from-emerald-900/30 to-blue-900/30 backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-6 mb-10 max-w-2xl mx-auto"
+            aria-label="Publishing instructions"
+            tabindex="0"
+          >
             <div class="flex items-center justify-center gap-3 mb-4">
               <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
               <h3 class="text-lg font-semibold text-emerald-300">Dead Simple Publishing</h3>
