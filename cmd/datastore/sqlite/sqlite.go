@@ -25,7 +25,7 @@ func createDB(ctx context.Context, cfg *config.Config) (*Sqlite, error) {
 	ctxT, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	db, err := sqlite.NewDB(ctxT, cfg.DbPath, sqlite.WithJournalMode(""), sqlite.WithMode(""))
+	db, err := sqlite.NewDB(ctxT, cfg.DbPath)
 	if err != nil {
 		return nil, err
 	}
