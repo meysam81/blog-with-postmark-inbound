@@ -24,6 +24,17 @@ import (
 	"github.com/meysam81/tarzan/cmd/filestore/filesystem"
 )
 
+func securityHeaders(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
+		w.Header().Set("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+		next.ServeHTTP(w, r)
+	})
+}
+
 func Main(frontend embed.FS) {
 	ctx := context.Background()
 
@@ -75,6 +86,7 @@ func Main(frontend embed.FS) {
 
 	r := chi.NewRouter()
 
+	r.Use(securityHeaders)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
