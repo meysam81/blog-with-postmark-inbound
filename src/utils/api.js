@@ -31,8 +31,6 @@ function formatReadableDate(dateString) {
       year: "numeric",
       month: "long",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   } catch (error) {
     log.error("Error formatting readable date:", error);
