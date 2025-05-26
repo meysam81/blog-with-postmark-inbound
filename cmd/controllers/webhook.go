@@ -6,17 +6,17 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
+	"github.com/meysam81/tarzan/cmd/metrics"
 	"github.com/meysam81/tarzan/cmd/models"
 )
 
 func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
+	defer metrics.RecordEmailProcessed(r.Response.Status)
 
-	username, password, ok := r.BasicAuth()
-	if !ok || username != a.Config.AuthUsername || password != a.Config.AuthPassword {
-		http.Error(w, "Unauthorized!", http.StatusUnauthorized)
-		return
-	}
+	now := time.Now()
+	defer func() { metrics.RecordEmailProcessingDuration(float64(time.Since(now))) }()
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -101,6 +101,8 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Notifying the signal for updated list...")
 	*a.Signal <- 1
+
+	metrics.IncrementPostsTotal()
 
 	w.WriteHeader(http.StatusOK)
 }

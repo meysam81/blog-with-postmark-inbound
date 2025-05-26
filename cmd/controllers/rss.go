@@ -64,7 +64,7 @@ func (a *AppState) RSSHandler(w http.ResponseWriter, r *http.Request) {
 		Generator:     "Tarzan RSS Generator",
 		LastBuildDate: time.Now().Format(time.RFC1123Z),
 		AtomLink: AtomLink{
-			Href: fmt.Sprintf("%s/rss", baseURL),
+			Href: fmt.Sprintf("%s%s", baseURL, a.Config.RSSEndpoint),
 			Rel:  "self",
 			Type: "application/rss+xml",
 		},

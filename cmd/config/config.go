@@ -27,6 +27,13 @@ type cfg struct {
 
 	BaseUrl string `koanf:"base-url"`
 
+	RSSEndpoint string `koanf:"endpoints.rss"`
+
+	MetricsEnabled      bool   `koanf:"metrics.enabled"`
+	MetricsAuthEnabled  bool   `koanf:"metrics.auth.enabled"`
+	MetricsAuthUsername string `koanf:"metrics.auth.username"`
+	MetricsAuthPassword string `koanf:"metrics.auth.password"`
+
 	DangerouslyAcceptAllSenders bool `koanf:"dangerously-accept-all-senders"`
 }
 
@@ -58,6 +65,9 @@ func NewConfig() (*Config, error) {
 		"dir.storage":                    "storage",
 		"dangerously-accept-all-senders": false,
 		"datastore":                      "sqlite",
+		"endpoints.rss":                  "/rss.xml",
+		"metrics.enabled":                true,
+		"metrics.auth.enabled":           false,
 	}, "."), nil)
 	if err != nil {
 		return nil, err
