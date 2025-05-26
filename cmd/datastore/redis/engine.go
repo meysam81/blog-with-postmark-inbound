@@ -41,7 +41,7 @@ func (r *redisClient) ListPosts(ctx context.Context, transformers ...func(*model
 
 		if createdAtStr, exists := postData["created_at"]; exists {
 			if createdAt, err := time.Parse(time.RFC3339, createdAtStr); err == nil {
-				p.CreatedAt = createdAt.Format("2026-01-02")
+				p.CreatedAt = createdAt.Format("2006-01-02")
 			}
 		}
 
@@ -105,7 +105,7 @@ func (r *redisClient) FindAuthorizedSenderByEmail(ctx context.Context, email str
 
 	if createdAtStr, exists := senderData["created_at"]; exists {
 		if createdAt, err := time.Parse(time.RFC3339, createdAtStr); err == nil {
-			sender.CreatedAt = createdAt.Format("2026-01-02")
+			sender.CreatedAt = createdAt.Format("2006-01-02")
 		}
 	}
 

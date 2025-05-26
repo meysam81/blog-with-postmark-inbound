@@ -7,7 +7,7 @@
           <!-- Back to Home -->
           <router-link
             to="/"
-            class="group flex items-center gap-3 text-slate-300 hover:text-emerald-300 transition-colors duration-300"
+            class="group flex items-center gap-3 text-slate-300"
             aria-label="Back to homepage"
           >
             <div class="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-lg flex items-center justify-center">
@@ -336,6 +336,21 @@ export default {
 </script>
 
 <style scoped>
+/* Remove hover decorations from TARZAN title */
+nav .group {
+  text-decoration: none;
+}
+
+nav .group:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+nav .group:focus {
+  text-decoration: none;
+  outline: none;
+}
+
 /* Blog Post Content Styling */
 .blog-post-content {
   line-height: 1.8;
