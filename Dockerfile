@@ -43,6 +43,7 @@ VOLUME /data
 ENV DIR_DB=/data/tarzan.db \
     DIR_STORAGE=/data/storage
 
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY deploy /deploy
 COPY LICENSE .
 COPY --from=builder /app/tarzan /tarzan
