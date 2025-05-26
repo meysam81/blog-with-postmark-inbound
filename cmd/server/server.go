@@ -83,6 +83,7 @@ func Main(frontend embed.FS) {
 
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/posts", httputils.LoggingMiddleware(app.ListPosts))
+		r.Get("/posts/{postId}", httputils.LoggingMiddleware(app.FetchPost))
 		r.Handle("/assets/*", http.StripPrefix("/api/assets/", http.FileServer(http.Dir(app.Config.StoragePath))))
 	})
 

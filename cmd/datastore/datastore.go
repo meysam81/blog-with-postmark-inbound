@@ -9,6 +9,7 @@ import (
 
 type Datastore interface {
 	ListPosts(context.Context, ...func(*models.Post)) (*[]models.Post, error)
+	FetchPost(context.Context, int, ...func(*models.Post)) (*models.Post, error)
 	InsertEmail(context.Context, *models.EmailInsertDB) error
 	FindAuthorizedSenderByEmail(ctx context.Context, email string) (*models.AuthorizedSender, error)
 	Close() error
