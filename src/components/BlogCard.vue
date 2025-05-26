@@ -52,18 +52,27 @@
       >
         <div class="author-info">
           <div class="author-avatar">
-            <span class="avatar-text">{{ getAuthorInitial(post['author-email']) }}</span>
+            <span class="avatar-text">{{ getAuthorInitial(post['author-name'], post['author-email']) }}</span>
             <div class="avatar-ring" aria-hidden="true"></div>
           </div>
 
-          <div class="author-details">
-            <p class="author-email">{{ post['author-email'] || 'Unknown Author' }}</p>
+          <div class="author-details" @mouseenter="handleAuthorHover" @mouseleave="handleAuthorLeave">
+            <p class="author-name">{{ post['author-name'] || post['author-email'] || 'Unknown Author' }}</p>
             <time
               class="publish-date"
               :datetime="formatISODate(post['created-at'])"
             >
               {{ formatReadableDate(post['created-at']) }}
             </time>
+
+            <!-- Email Tooltip -->
+            <div
+              v-if="showEmailTooltip && post['author-email']"
+              class="email-tooltip"
+              role="tooltip"
+            >
+              {{ post['author-email'] }}
+            </div>
           </div>
         </div>
 
@@ -117,6 +126,7 @@ export default {
   },
   setup(props) {
     var isHovered = ref(false)
+    var showEmailTooltip = ref(false)
     var router = useRouter()
 
     function handleMouseEnter() {
@@ -125,6 +135,14 @@ export default {
 
     function handleMouseLeave() {
       isHovered.value = false
+    }
+
+    function handleAuthorHover() {
+      showEmailTooltip.value = true
+    }
+
+    function handleAuthorLeave() {
+      showEmailTooltip.value = false
     }
 
     function handleReadMore() {
@@ -139,8 +157,11 @@ export default {
 
     return {
       isHovered,
+      showEmailTooltip,
       handleMouseEnter,
       handleMouseLeave,
+      handleAuthorHover,
+      handleAuthorLeave,
       handleReadMore,
       formatISODate,
       formatReadableDate,
@@ -387,11 +408,12 @@ export default {
 
 .author-details {
   flex: 1;
+  position: relative;
 }
 
-.author-email {
-  font-weight: 500;
-  color: #334155;
+.author-name {
+  font-weight: 600;
+  color: #1e293b;
   margin: 0 0 0.25rem 0;
   font-size: 0.9rem;
 }
@@ -399,6 +421,46 @@ export default {
 .publish-date {
   color: #64748b;
   font-size: 0.8rem;
+}
+
+/* Email Tooltip */
+.email-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #1e293b;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 100;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: tooltipFadeIn 0.2s ease-in-out;
+}
+
+.email-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 1rem;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid #1e293b;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Action Button */
@@ -601,8 +663,8 @@ export default {
     color: #cbd5e1;
   }
 
-  .author-email {
-    color: #cbd5e1;
+  .author-name {
+    color: #f1f5f9;
   }
 
   .publish-date {

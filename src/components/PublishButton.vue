@@ -278,12 +278,13 @@
 
 <script>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { VITE_INBOUND_EMAIL_ADDRESS } from '@/utils/env.js'
 
 export default {
   name: 'PublishButton',
   setup() {
     var isPublishInfoVisible = ref(false)
-    var emailToCopy = ref("blog@tarzan.meysam.io")
+    var emailToCopy = ref(VITE_INBOUND_EMAIL_ADDRESS)
     var emailCopied = ref(false)
     var copyButtonTitle = ref("Copy email address")
     var publishInfoPanel = ref(null)

@@ -40,12 +40,23 @@ function formatReadableDate(dateString) {
   }
 }
 
-function getAuthorInitial(email) {
+function getAuthorInitial(authorName, fallbackEmail) {
   try {
-    if (!email || typeof email !== "string" || email.length === 0) {
+    var nameToUse = authorName || fallbackEmail;
+    if (!nameToUse || typeof nameToUse !== "string" || nameToUse.length === 0) {
       return "U"; // Default to "U" for Unknown
     }
-    return email.charAt(0).toUpperCase();
+
+    // If it's a name (contains space), get initials from first and last name
+    if (nameToUse.includes(" ")) {
+      var nameParts = nameToUse.trim().split(" ");
+      if (nameParts.length >= 2) {
+        return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
+      }
+    }
+
+    // For single word or email, just use first character
+    return nameToUse.charAt(0).toUpperCase();
   } catch (error) {
     log.error("Error getting author initial:", error);
     return "U";

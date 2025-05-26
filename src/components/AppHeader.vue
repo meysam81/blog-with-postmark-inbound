@@ -62,7 +62,7 @@
             </div>
 
             <p class="text-slate-200 mb-4 leading-relaxed">
-              Email <strong class="text-emerald-300 font-mono text-lg">blog@tarzan.meysam.io</strong> with your content. Your blog post goes live immediately and appears below.
+              Email <strong class="text-emerald-300 font-mono text-lg">{{ VITE_INBOUND_EMAIL_ADDRESS }}</strong> with your content. Your blog post goes live immediately and appears below.
             </p>
 
             <div class="flex items-center justify-center gap-2 relative">
@@ -167,6 +167,7 @@
 import { ref } from 'vue'
 import GitHubLink from './GitHubLink.vue'
 import TitleAnimation from './TitleAnimation.vue'
+import { VITE_INBOUND_EMAIL_ADDRESS } from '@/utils/env.js'
 
 export default {
   name: 'AppHeader',
@@ -176,7 +177,7 @@ export default {
   },
   setup() {
     var emailCopied = ref(false)
-    var emailAddress = 'blog@tarzan.meysam.io'
+    var emailAddress = VITE_INBOUND_EMAIL_ADDRESS
 
     function scrollToContent() {
       var mainContent = document.getElementById('main-content')
