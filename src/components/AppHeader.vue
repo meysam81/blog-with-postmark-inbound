@@ -62,7 +62,7 @@
             </div>
 
             <p class="text-slate-200 mb-4 leading-relaxed">
-              Email <strong class="text-emerald-300 font-mono text-lg">{{ VITE_INBOUND_EMAIL_ADDRESS }}</strong> with your content. Your blog post goes live immediately and appears below.
+              Email <strong class="text-emerald-300 font-mono text-lg">{{ emailAddress }}</strong> with your content. Your blog post goes live immediately and appears below.
             </p>
 
             <div class="flex items-center justify-center gap-2 relative">
@@ -177,7 +177,7 @@ export default {
   },
   setup() {
     var emailCopied = ref(false)
-    var emailAddress = VITE_INBOUND_EMAIL_ADDRESS
+    var emailAddress = ref(VITE_INBOUND_EMAIL_ADDRESS)
 
     function scrollToContent() {
       var mainContent = document.getElementById('main-content')
@@ -228,6 +228,7 @@ export default {
 
     return {
       emailCopied,
+      emailAddress,
       scrollToContent,
       copyEmailAddress
     }
