@@ -11,8 +11,9 @@
 <!-- Release & Distribution -->
 
 [![Latest Release](https://img.shields.io/github/v/release/meysam81/tarzan?style=flat-square&logo=github&color=blue)](https://github.com/meysam81/tarzan/releases/latest)
-[![Docker Image](https://img.shields.io/badge/docker-ghcr.io%2Fmeysam81%2Ftarzan-blue?style=flat-square&logo=docker)](https://ghcr.io/meysam81/tarzan)
+[![Docker Image](https://img.shields.io/badge/docker-meysam81%2Ftarzan-blue?style=flat-square&logo=docker)](https://ghcr.io/meysam81/tarzan)
 [![Docker Pulls](https://img.shields.io/docker/pulls/meysam81/tarzan?style=flat-square&logo=docker)](https://ghcr.io/meysam81/tarzan)
+[![Docker Image](https://img.shields.io/docker/image-size/meysam81/tarzan?style=flat-square&logo=docker)](https://ghcr.io/meysam81/tarzan)
 [![Container Security](https://img.shields.io/badge/🔐_Container-Cosign_Signed-green?style=flat-square)](https://github.com/meysam81/tarzan/actions)
 
 <!-- License & Community -->
@@ -27,7 +28,7 @@
 [![Go Version](https://img.shields.io/github/go-mod/go-version/meysam81/tarzan?style=flat-square&logo=go)](go.mod)
 [![Vue.js](https://img.shields.io/badge/Frontend-Vue.js_3-4FC08D?style=flat-square&logo=vue.js)](https://vuejs.org/)
 [![TailwindCSS](https://img.shields.io/badge/Styling-TailwindCSS-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
-[![SQLite](https://img.shields.io/badge/Database-SQLite-003B57?style=flat-square&logo=sqlite)](https://sqlite.org/)
+[![SQLite | Redis](https://img.shields.io/badge/Database-SQLite_|_Redis-003B57?style=flat-square&logo=sqlite)](https://sqlite.org/)
 
 <!-- Code Quality & Tools -->
 
@@ -71,7 +72,7 @@ Tarzan revolutionizes content creation by turning every email you send into a be
   - [Docker Compose (Recommended)](#docker-compose-recommended)
   - [Docker](#docker)
   - [Binary Download](#binary-download)
-  - [Kubernetes](#kubernetes)
+  - [Kubernetes Deployment (Enterprise Ready)](#kubernetes-deployment-enterprise-ready)
 - [⚙️ Configuration](#-configuration)
 - [📧 Email Integration](#-email-integration)
 - [🎨 Customization](#-customization)
