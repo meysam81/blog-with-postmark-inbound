@@ -102,12 +102,21 @@
 
           <!-- Author and Meta Info -->
           <div class="flex flex-col sm:flex-row items-center justify-center gap-6 text-slate-300">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-                {{ getAuthorInitial(post['author-email']) }}
+            <div class="flex items-center gap-3" @mouseenter="handleAuthorHover" @mouseleave="handleAuthorLeave">
+              <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold relative">
+                {{ getAuthorInitial(post['author-name'], post['author-email']) }}
+
+                <!-- Email Tooltip -->
+                <div
+                  v-if="showEmailTooltip && post['author-email']"
+                  class="author-email-tooltip"
+                  role="tooltip"
+                >
+                  {{ post['author-email'] }}
+                </div>
               </div>
               <div class="text-left">
-                <p class="font-medium">{{ post['author-email'] || 'Unknown Author' }}</p>
+                <p class="font-medium">{{ post['author-name'] || post['author-email'] || 'Unknown Author' }}</p>
                 <p class="text-sm opacity-75">Author</p>
               </div>
             </div>
@@ -222,6 +231,7 @@ export default {
     var hasError = ref(false)
     var errorMessage = ref('')
     var urlCopied = ref(false)
+    var showEmailTooltip = ref(false)
     var route = useRoute()
 
     async function loadPost(postId) {
@@ -254,6 +264,14 @@ export default {
       } finally {
         isLoading.value = false
       }
+    }
+
+    function handleAuthorHover() {
+      showEmailTooltip.value = true
+    }
+
+    function handleAuthorLeave() {
+      showEmailTooltip.value = false
     }
 
     async function copyPostUrl() {
@@ -305,6 +323,9 @@ export default {
       hasError,
       errorMessage,
       urlCopied,
+      showEmailTooltip,
+      handleAuthorHover,
+      handleAuthorLeave,
       copyPostUrl,
       formatISODate,
       formatReadableDate,
@@ -426,6 +447,47 @@ export default {
   100% {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* Email Tooltip */
+.author-email-tooltip {
+  position: absolute;
+  bottom: -3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 100;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  animation: tooltipFadeIn 0.2s ease-in-out;
+}
+
+.author-email-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid #1e293b;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 }
 </style>

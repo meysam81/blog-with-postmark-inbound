@@ -201,11 +201,12 @@
 
 <script>
 import { ref } from 'vue'
+import { VITE_INBOUND_EMAIL_ADDRESS } from '@/utils/env.js'
 
 export default {
   name: 'EmptyState',
   setup() {
-    var blogEmail = 'blog@tarzan.meysam.io'
+    var blogEmail = VITE_INBOUND_EMAIL_ADDRESS
     var isModalOpen = ref(false)
     var emailCopied = ref(false)
 
