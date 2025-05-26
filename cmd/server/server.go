@@ -15,6 +15,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/gorilla/websocket"
 	"github.com/meysam81/x/httputils"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/meysam81/tarzan/cmd/config"
 	"github.com/meysam81/tarzan/cmd/controllers"
@@ -22,6 +23,7 @@ import (
 	"github.com/meysam81/tarzan/cmd/datastore/redis"
 	"github.com/meysam81/tarzan/cmd/datastore/sqlite"
 	"github.com/meysam81/tarzan/cmd/filestore/filesystem"
+	mw "github.com/meysam81/tarzan/cmd/middleware"
 )
 
 func securityHeaders(next http.Handler) http.Handler {
@@ -31,6 +33,7 @@ func securityHeaders(next http.Handler) http.Handler {
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
 		w.Header().Set("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+		w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; report-uri /csp-violation-report")
 		next.ServeHTTP(w, r)
 	})
 }
@@ -90,17 +93,36 @@ func Main(frontend embed.FS) {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/sitemap.xml", httputils.LoggingMiddleware(app.SitemapHandler))
-	r.Get("/rss.xml", httputils.LoggingMiddleware(app.RSSHandler))
+	promRouter := chi.NewRouter()
+	promRouter.Use(mw.PrometheusMiddleware)
 
-	r.Route("/api", func(r chi.Router) {
+	promRouter.Get("/sitemap.xml", httputils.LoggingMiddleware(app.SitemapHandler))
+	promRouter.Get(app.Config.RSSEndpoint, httputils.LoggingMiddleware(app.RSSHandler))
+
+	if app.Config.MetricsEnabled {
+		if app.Config.MetricsAuthEnabled {
+			metricsCreds := map[string]string{
+				app.Config.MetricsAuthUsername: app.Config.MetricsAuthPassword,
+			}
+			promRouter.With(middleware.BasicAuth("Metrics Authentication", metricsCreds)).Get("/metrics", promhttp.Handler().ServeHTTP)
+		} else {
+			promRouter.Get("/metrics", promhttp.Handler().ServeHTTP)
+		}
+	}
+
+	promRouter.Route("/api", func(r chi.Router) {
 		r.Get("/posts", httputils.LoggingMiddleware(app.ListPosts))
 		r.Get("/posts/{postId}", httputils.LoggingMiddleware(app.FetchPost))
 		r.Handle("/assets/*", http.StripPrefix("/api/assets/", http.FileServer(http.Dir(app.Config.StoragePath))))
 	})
 
-	r.Post("/webhook", httputils.LoggingMiddleware(app.WebhookHandler))
+	webhookCreds := map[string]string{
+		app.Config.AuthUsername: app.Config.AuthPassword,
+	}
 
+	promRouter.With(middleware.BasicAuth("Postmark Authentication", webhookCreds)).Post("/webhook", httputils.LoggingMiddleware(app.WebhookHandler))
+
+	r.Mount("/", promRouter)
 	r.Get("/ws", app.Websocket)
 
 	distFS, err := fs.Sub(frontend, "dist")

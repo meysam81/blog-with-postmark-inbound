@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/meysam81/tarzan/cmd/metrics"
 )
 
 func (a *AppState) Websocket(w http.ResponseWriter, r *http.Request) {
@@ -16,6 +17,8 @@ func (a *AppState) Websocket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer conn.Close()
+
+	metrics.IncrementWebSocketConnections()
 
 	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
 	conn.SetPongHandler(func(string) error {
@@ -44,6 +47,7 @@ func (a *AppState) Websocket(w http.ResponseWriter, r *http.Request) {
 	for {
 		select {
 		case <-done:
+			metrics.DecrementWebSocketConnections()
 			return
 		case <-pingTicker.C:
 			conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
