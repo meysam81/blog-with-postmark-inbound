@@ -133,68 +133,38 @@ async function fetchPosts() {
   }
 }
 
-async function fetchPostById(postId) {
-  try {
-    if (!postId) {
-      throw new Error("Post ID is required")
-    }
+function fetchPostById(postId) {
+  return fetch(`/api/posts/${postId}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  })
+    .then(function handleResponse(response) {
+      if (!response.ok) {
+        var errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        log.error("Failed to fetch post:", errorMessage);
 
-    log.debug(`Fetching post with ID: ${postId}`)
-    var response = await fetch(`/api/posts/${encodeURIComponent(postId)}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error("Post not found")
-      }
-
-      var errorMessage = `HTTP ${response.status}: ${response.statusText}`
-      log.error(`Failed to fetch post ${postId}:`, errorMessage)
-
-      try {
-        var errorData = await response.text()
-        if (errorData) {
-          log.error("Server error details:", errorData)
+        // Try to get error details from response
+        try {
+          return response.text().then(function parseErrorText(errorData) {
+            if (errorData) {
+              log.error("Server error details:", errorData);
+            }
+            throw new Error(`Failed to fetch post: ${errorMessage}`);
+          });
+        } catch (parseError) {
+          log.warn("Could not parse error response:", parseError);
+          throw new Error(`Failed to fetch post: ${errorMessage}`);
         }
-      } catch (parseError) {
-        log.warn("Could not parse error response:", parseError)
       }
-
-      throw new Error(`Failed to fetch post: ${errorMessage}`)
-    }
-
-    var post = await response.json()
-
-    if (!post || typeof post !== "object") {
-      throw new Error("Invalid post data received")
-    }
-
-    // Validate post has required fields
-    if (!post.title || !post.content || !post["author-email"] || !post["created-at"]) {
-      log.warn("Post missing required fields:", post)
-      throw new Error("Post data is incomplete")
-    }
-
-    log.debug(`Successfully fetched post: ${post.title}`)
-    return post
-
-  } catch (error) {
-    if (error.name === "TypeError" && error.message.includes("fetch")) {
-      log.error("Network error - server may be unavailable:", error.message)
-      throw new Error("Unable to connect to server. Please check your internet connection.")
-    } else if (error.name === "SyntaxError") {
-      log.error("Invalid JSON response from server:", error.message)
-      throw new Error("Server returned invalid data. Please try again.")
-    } else {
-      log.error(`Error fetching post ${postId}:`, error.message)
+      return response.json()
+    })
+    .catch(function handleError(error) {
+      log.error('Error fetching post:', error)
       throw error
-    }
-  }
+    })
 }
 
 export { formatISODate, formatReadableDate, getAuthorInitial, fetchPosts, fetchPostById };

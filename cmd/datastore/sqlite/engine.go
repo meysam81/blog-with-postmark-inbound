@@ -58,3 +58,19 @@ func (s *Sqlite) FindAuthorizedSenderByEmail(ctx context.Context, email string) 
 	}
 	return &sender, nil
 }
+
+func (s *Sqlite) FetchPost(ctx context.Context, postId int, transformers ...func(*models.Post)) (*models.Post, error) {
+	var post models.Post
+	ctxT, cancelT := context.WithTimeout(ctx, 3*time.Second)
+	defer cancelT()
+
+	row := s.DB.QueryRowContext(ctxT, "SELECT id, title, content, author_email, author_name, created_at FROM posts WHERE id = ?", postId)
+	err := row.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorEmail, &post.AuthorName, &post.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	for _, t := range transformers {
+		t(&post)
+	}
+	return &post, nil
+}

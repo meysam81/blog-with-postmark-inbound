@@ -115,3 +115,38 @@ func (r *redisClient) FindAuthorizedSenderByEmail(ctx context.Context, email str
 func (r *redisClient) Close() error {
 	return r.r.Close()
 }
+
+func (r *redisClient) FetchPost(ctx context.Context, postId int, transformers ...func(*models.Post)) (*models.Post, error) {
+	postKey := fmt.Sprintf("post:%d", postId)
+	postData, err := r.r.HGetAll(ctx, postKey).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	if len(postData) == 0 {
+		return nil, fmt.Errorf("post not found")
+	}
+
+	var p models.Post
+	if idStr, ok := postData["id"]; ok {
+		if idInt, err := strconv.Atoi(idStr); err == nil {
+			p.ID = idInt
+		}
+	}
+	p.Title = postData["title"]
+	p.Content = postData["content"]
+	p.AuthorEmail = postData["author_email"]
+	p.AuthorName = postData["author_name"]
+
+	if createdAtStr, exists := postData["created_at"]; exists {
+		if createdAt, err := time.Parse(time.RFC3339, createdAtStr); err == nil {
+			p.CreatedAt = createdAt.Format("2026-01-02")
+		}
+	}
+
+	for _, t := range transformers {
+		t(&p)
+	}
+
+	return &p, nil
+}
