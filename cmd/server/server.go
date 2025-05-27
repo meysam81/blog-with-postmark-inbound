@@ -116,6 +116,8 @@ func Main(frontend embed.FS) {
 		r.Handle("/assets/*", http.StripPrefix("/api/assets/", http.FileServer(http.Dir(app.Config.StoragePath))))
 	})
 
+	promRouter.Post("/csp-violation-report", app.CSPViolationHandler)
+
 	webhookCreds := map[string]string{
 		app.Config.AuthUsername: app.Config.AuthPassword,
 	}
