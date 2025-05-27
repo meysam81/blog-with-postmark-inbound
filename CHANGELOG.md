@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/meysam81/tarzan/compare/v1.0.1...v1.0.2) (2025-05-27)
+
+
+### Bug Fixes
+
+* **CI:** provide PAT to github releaser ([93e722b](https://github.com/meysam81/tarzan/commit/93e722b564e60e16378edb4835bdf9b2d211b014))
+
 ## [1.0.1](https://github.com/meysam81/tarzan/compare/v1.0.0...v1.0.1) (2025-05-27)
 
 
