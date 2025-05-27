@@ -39,3 +39,4 @@ dist/*
 .secrets/
 .lycheecache
 .DS_Store
+.goreleaser-dist
