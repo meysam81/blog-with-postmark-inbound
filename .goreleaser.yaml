@@ -36,6 +36,8 @@ changelog:
       - "^docs:"
       - "^test:"
 
+dist: .goreleaser-dist
+
 binary_signs:
   - cmd: cosign
     args:

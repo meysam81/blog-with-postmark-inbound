@@ -119,6 +119,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ needs.release-please.outputs.tag_name }}
       - name: Cache docker
         uses: actions/cache@v4
         id: cache
@@ -132,12 +133,22 @@ jobs:
         uses: anchore/sbom-action/download-syft@v0
       - name: Setup Cosign CLI
         uses: sigstore/cosign-installer@v3
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - name: Install goreleaser
         run: |
           echo 'deb [trusted=yes] https://repo.goreleaser.com/apt/ /' | sudo tee /etc/apt/sources.list.d/goreleaser.list
           sudo apt update
           sudo apt install -y goreleaser
           goreleaser --version
+      - name: Install bun deps
+        run: bun install
+      - name: Build frontend
+        run: bun run build
+      - name: Run goreleaser
+        run: goreleaser release --release-notes CHANGELOG.md --clean
       - name: Build docker
         uses: meysam81/build-docker@main
         with:
