@@ -143,7 +143,11 @@ func Main(frontend embed.FS) {
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		file, err := distFS.Open(r.URL.Path[1:])
 		if err == nil {
-			defer file.Close()
+			defer func() {
+				if err := file.Close(); err != nil {
+					log.Println("Error closing file:", err)
+				}
+			}()
 			if stat, err := file.Stat(); err == nil && !stat.IsDir() {
 				http.ServeContent(w, r, r.URL.Path, stat.ModTime(), file.(io.ReadSeeker))
 				return
@@ -151,7 +155,11 @@ func Main(frontend embed.FS) {
 		}
 
 		indexFile, err := distFS.Open("index.html")
-		defer indexFile.Close()
+		defer func() {
+			if err := indexFile.Close(); err != nil {
+				log.Println("Error closing index file:", err)
+			}
+		}()
 
 		if err != nil {
 			log.Println("Error reading index.html", err)

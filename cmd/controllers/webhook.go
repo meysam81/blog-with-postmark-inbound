@@ -15,7 +15,11 @@ import (
 )
 
 func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
-	defer func() { metrics.RecordEmailProcessed(r.Response.Status) }()
+	defer func() {
+		if r.Response != nil {
+			metrics.RecordEmailProcessed(r.Response.Status)
+		}
+	}()
 
 	now := time.Now()
 	defer func() { metrics.RecordEmailProcessingDuration(float64(time.Since(now))) }()

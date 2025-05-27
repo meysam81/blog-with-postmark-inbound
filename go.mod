@@ -11,7 +11,6 @@ require (
 	github.com/meysam81/x v1.3.1
 	github.com/prometheus/client_golang v1.22.0
 	github.com/redis/go-redis/v9 v9.8.0
-	github.com/russross/blackfriday/v2 v2.1.0
 )
 
 require (

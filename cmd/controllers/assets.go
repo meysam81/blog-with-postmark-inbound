@@ -33,5 +33,9 @@ func (a *AppState) AssetsHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/octet-stream")
 	}
 
-	w.Write(data)
+	_, err = w.Write(data)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 }

@@ -16,13 +16,22 @@ func (a *AppState) Websocket(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed upgrading the connection", http.StatusBadRequest)
 		return
 	}
-	defer conn.Close()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			log.Println("Connection close error:", err)
+		}
+	}()
 
 	metrics.IncrementWebSocketConnections()
 
-	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+	if err := conn.SetReadDeadline(time.Now().Add(60 * time.Second)); err != nil {
+		log.Println("Set read deadline error:", err)
+		return
+	}
 	conn.SetPongHandler(func(string) error {
-		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		if err := conn.SetReadDeadline(time.Now().Add(60 * time.Second)); err != nil {
+			log.Println("Set read deadline error in pong handler:", err)
+		}
 		return nil
 	})
 
@@ -50,14 +59,20 @@ func (a *AppState) Websocket(w http.ResponseWriter, r *http.Request) {
 			metrics.DecrementWebSocketConnections()
 			return
 		case <-pingTicker.C:
-			conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+			if err := conn.SetWriteDeadline(time.Now().Add(10 * time.Second)); err != nil {
+				log.Println("Set write deadline error:", err)
+				return
+			}
 			if err := conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				log.Println("Ping error:", err)
 				return
 			}
 		case <-*a.Signal:
 			log.Println("Notification received!")
-			conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+			if err := conn.SetWriteDeadline(time.Now().Add(10 * time.Second)); err != nil {
+				log.Println("Set write deadline error:", err)
+				return
+			}
 			err := conn.WriteMessage(websocket.TextMessage, []byte("New post available"))
 			if err != nil {
 				if websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
