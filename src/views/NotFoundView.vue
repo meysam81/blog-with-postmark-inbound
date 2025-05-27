@@ -83,19 +83,6 @@
             </span>
             <div class="absolute inset-0 bg-gradient-to-r from-emerald-600/50 to-cyan-600/50 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </router-link>
-
-          <button
-            @click="goBack"
-            class="group relative px-8 py-4 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-slate-500/25 focus:outline-none focus:ring-4 focus:ring-slate-500/50"
-          >
-            <span class="relative z-10 flex items-center gap-2">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-              </svg>
-              Go Back
-            </span>
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-700/50 to-slate-600/50 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </button>
         </div>
 
         <!-- Helpful Links -->
