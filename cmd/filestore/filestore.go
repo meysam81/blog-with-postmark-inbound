@@ -9,6 +9,7 @@ import (
 type Filestore interface {
 	Save(filename string, data []byte) error
 	Load(filename string) (string, error)
+	LoadBytes(filename string) ([]byte, error)
 }
 
 type BuildFilestore interface {

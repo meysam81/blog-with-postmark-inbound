@@ -3,6 +3,7 @@ package filesystem
 import (
 	"context"
 	"encoding/base64"
+	"net/http"
 	"os"
 	"path/filepath"
 
@@ -37,4 +38,17 @@ func (fs *fileSystem) Load(filename string) (string, error) {
 	}
 	return base64.StdEncoding.EncodeToString(data), nil
 
+}
+
+func (fs *fileSystem) LoadBytes(filename string) ([]byte, error) {
+	path := filepath.Join(fs.AttachmentPath, filename)
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (fs *fileSystem) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	http.StripPrefix("/api/assets/", http.FileServer(http.Dir(fs.AttachmentPath))).ServeHTTP(w, r)
 }
