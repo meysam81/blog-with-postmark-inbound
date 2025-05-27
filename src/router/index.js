@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '@/views/HomePage.vue'
 import BlogPostView from '@/views/BlogPostView.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
 
 var routes = [
   {
@@ -13,6 +14,11 @@ var routes = [
     name: 'BlogPost',
     component: BlogPostView,
     props: true
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFoundView
   }
 ]
 

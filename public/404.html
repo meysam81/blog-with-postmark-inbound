@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Page Not Found | Tarzan</title>
+
+    <!-- SEO Meta Tags -->
+    <meta
+      name="description"
+      content="Oops! The page you're looking for has swung away. Return to Tarzan - the revolutionary email-powered blogging platform."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="404 - Page Not Found | Tarzan" />
+    <meta
+      property="og:description"
+      content="The page you're looking for has swung away. Return to Tarzan blog platform."
+    />
+    <meta property="og:url" content="https://tarzan.meysam.io/404" />
+    <meta property="og:site_name" content="Tarzan" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="404 - Page Not Found | Tarzan" />
+    <meta
+      name="twitter:description"
+      content="The page you're looking for has swung away. Return to Tarzan blog platform."
+    />
+
+    <!-- Favicons and Icons -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- Preload Critical Resources -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+
+    <!-- Font Loading Strategy -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <!-- Tailwind CSS (using same CDN approach for consistency) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              'display': ['Playfair Display', 'serif'],
+              'mono': ['JetBrains Mono', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      /* Screen reader only content */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* Focus styles for accessibility */
+      *:focus {
+        outline: 2px solid #10b981;
+        outline-offset: 2px;
+      }
+
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        *:focus {
+          outline: 3px solid #000;
+          outline-offset: 2px;
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Custom animations */
+      @keyframes swing {
+        0%, 100% { transform: rotate(-5deg) scale(1); }
+        50% { transform: rotate(5deg) scale(1.05); }
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+      }
+
+      .animate-swing {
+        animation: swing 3s ease-in-out infinite;
+      }
+
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+    </style>
+  </head>
+  <body
+    class="antialiased bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-slate-100 min-h-screen overflow-x-hidden relative"
+    style="
+      font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+      text-rendering: optimizeLegibility;
+    "
+  >
+    <!-- Skip Navigation -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-md z-50"
+    >
+      Skip to main content
+    </a>
+
+    <!-- Ambient Background Effects -->
+    <div class="fixed inset-0 opacity-30 pointer-events-none">
+      <div
+        class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"
+      ></div>
+      <div
+        class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"
+        style="animation-delay: 2s"
+      ></div>
+      <div
+        class="absolute top-3/4 left-1/2 w-64 h-64 bg-emerald-500/20 rounded-full blur-2xl animate-pulse"
+        style="animation-delay: 4s"
+      ></div>
+    </div>
+
+    <!-- Noise Texture Overlay -->
+    <div
+      class="fixed inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay"
+      style="
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSBiYXNlRnJlcXVlbmN5PSIwLjkiIG51bU9jdGF2ZXM9IjQiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4xNSIvPjwvc3ZnPg==');
+      "
+    ></div>
+
+    <!-- Main Content -->
+    <main id="main-content" class="min-h-screen relative z-10 flex items-center justify-center px-6 py-16">
+      <div class="max-w-4xl mx-auto text-center">
+        <!-- 404 Animation Container -->
+        <div class="mb-12">
+          <!-- Large 404 Text -->
+          <div class="relative mb-8">
+            <h1 class="text-8xl md:text-9xl lg:text-[12rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 leading-none tracking-tight font-display">
+              <span class="block relative animate-swing">
+                404
+                <div class="absolute inset-0 text-emerald-400/20 blur-xl">404</div>
+              </span>
+            </h1>
+          </div>
+
+          <!-- Vine/Rope Animation -->
+          <div class="flex justify-center mb-8">
+            <div class="relative">
+              <!-- Vine rope -->
+              <div class="w-1 h-32 bg-gradient-to-b from-green-600 to-green-800 mx-auto animate-float"></div>
+
+              <!-- Tarzan figure (using emoji/icon) -->
+              <div class="text-6xl animate-swing" style="animation-delay: 0.5s;">
+                🦍
+              </div>
+
+              <!-- Floating leaves -->
+              <div class="absolute -top-4 -left-8 text-2xl animate-float" style="animation-delay: 1s;">🍃</div>
+              <div class="absolute -top-2 -right-6 text-xl animate-float" style="animation-delay: 2s;">🍃</div>
+              <div class="absolute top-8 -left-6 text-lg animate-float" style="animation-delay: 1.5s;">🍃</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div class="mb-12">
+          <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-100 leading-tight mb-6">
+            <span class="block">Oops! This page has</span>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-cyan-300 font-black drop-shadow-sm">
+              swung away
+            </span>
+          </h2>
+
+          <p class="text-lg md:text-xl text-slate-300 leading-relaxed max-w-2xl mx-auto mb-8">
+            The page you're looking for seems to have vanished into the digital jungle. Let's get you back to safety.
+          </p>
+
+          <!-- Status Message -->
+          <div class="bg-gradient-to-r from-red-900/40 to-orange-900/40 backdrop-blur-sm border border-red-500/30 rounded-xl p-4 mb-8 max-w-xl mx-auto">
+            <div class="flex items-center justify-center gap-2 mb-2">
+              <div class="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+              <span class="text-red-300 font-semibold text-sm">PAGE NOT FOUND</span>
+              <div class="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+            </div>
+            <p class="text-slate-200 text-sm">
+              The requested URL was not found on this server
+            </p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <a
+            href="/"
+            class="group relative px-8 py-4 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-emerald-500/25 focus:outline-none focus:ring-4 focus:ring-emerald-500/50"
+          >
+            <span class="relative z-10 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+              </svg>
+              Return Home
+            </span>
+            <div class="absolute inset-0 bg-gradient-to-r from-emerald-600/50 to-cyan-600/50 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </a>
+
+          <button
+            onclick="window.history.back()"
+            class="group relative px-8 py-4 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-slate-500/25 focus:outline-none focus:ring-4 focus:ring-slate-500/50"
+          >
+            <span class="relative z-10 flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+              Go Back
+            </span>
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-700/50 to-slate-600/50 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </button>
+        </div>
+
+        <!-- Helpful Links -->
+        <div class="border-t border-slate-800/50 pt-8">
+          <p class="text-slate-400 mb-4">Looking for something specific?</p>
+          <div class="flex flex-wrap justify-center gap-4 text-sm">
+            <a href="/" class="text-emerald-400 hover:text-emerald-300 transition-colors duration-200">
+              Home
+            </a>
+            <span class="text-slate-600">•</span>
+            <a href="/rss.xml" class="text-emerald-400 hover:text-emerald-300 transition-colors duration-200">
+              RSS Feed
+            </a>
+            <span class="text-slate-600">•</span>
+            <a href="https://github.com/meysam81/tarzan" class="text-emerald-400 hover:text-emerald-300 transition-colors duration-200">
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-slate-800/50 bg-slate-950/30 backdrop-blur-xl">
+      <div class="container mx-auto px-6 py-8">
+        <div class="text-center">
+          <p class="text-slate-400 text-sm">
+            © 2024 Tarzan. Made with ❤️ by
+            <a href="https://github.com/meysam81" class="text-emerald-400 hover:text-emerald-300 transition-colors duration-200">
+              Meysam Azad
+            </a>
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Add some interactive behavior
+      document.addEventListener('DOMContentLoaded', function initializeErrorPage() {
+        // Auto-redirect suggestion after 30 seconds
+        var redirectTimer = setTimeout(function showRedirectSuggestion() {
+          var shouldRedirect = confirm('Would you like to return to the home page?');
+          if (shouldRedirect) {
+            window.location.href = '/';
+          }
+        }, 30000);
+
+        // Clear timer if user interacts with the page
+        document.addEventListener('click', function clearRedirectTimer() {
+          clearTimeout(redirectTimer);
+        });
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function handleKeyNavigation(e) {
+          if (e.key === 'h' || e.key === 'H') {
+            window.location.href = '/';
+          } else if (e.key === 'b' || e.key === 'B') {
+            window.history.back();
+          }
+        });
+
+        // Log 404 for analytics (if needed)
+        if (window.gtag) {
+          gtag('event', 'page_view', {
+            page_title: '404 - Page Not Found',
+            page_location: window.location.href
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
