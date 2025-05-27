@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"regexp"
 	"strings"
 	"time"
 
@@ -90,13 +89,15 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	finalContent := processContentForMarkdown(email.TextBody, email.HtmlBody, contentIDMap)
+	for contentID, url := range contentIDMap {
+		content = strings.ReplaceAll(content, "cid:"+contentID, url)
+	}
 
 	err = a.DS.InsertEmail(r.Context(), &models.EmailInsertDB{
 		From:     email.From,
 		FromName: email.FromName,
 		Subject:  email.Subject,
-		Content:  finalContent,
+		Content:  content,
 	})
 	if err != nil {
 		log.Println("Failed inserting to datastore:", err)
@@ -110,89 +111,4 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	metrics.IncrementPostsTotal()
 
 	w.WriteHeader(http.StatusOK)
-}
-
-func processContentForMarkdown(textBody, htmlBody string, contentIDMap map[string]string) string {
-	if textBody == "" {
-		return replaceContentIDs(htmlBody, contentIDMap)
-	}
-
-	if htmlBody == "" {
-		return textBody
-	}
-
-	imageMarkdown := extractImagesAsMarkdown(htmlBody, contentIDMap)
-	if imageMarkdown == "" {
-		return textBody
-	}
-
-	enhancedText := insertImagesIntoText(textBody, imageMarkdown)
-	return enhancedText
-}
-
-func extractImagesAsMarkdown(htmlBody string, contentIDMap map[string]string) string {
-	imgRegex := regexp.MustCompile(`<img[^>]+src="cid:([^"]+)"[^>]*alt="([^"]*)"[^>]*>`)
-	matches := imgRegex.FindAllStringSubmatch(htmlBody, -1)
-
-	var markdownImages []string
-	for _, match := range matches {
-		if len(match) >= 3 {
-			contentID := match[1]
-			altText := match[2]
-
-			if url, exists := contentIDMap[contentID]; exists {
-				markdownImg := "![" + altText + "](" + url + ")"
-				markdownImages = append(markdownImages, markdownImg)
-			}
-		}
-	}
-
-	return strings.Join(markdownImages, "\n\n")
-}
-
-func insertImagesIntoText(textBody, imageMarkdown string) string {
-	lines := strings.Split(textBody, "\n")
-	var result []string
-	imageInserted := false
-
-	for i, line := range lines {
-		result = append(result, line)
-
-		if !imageInserted && (strings.HasPrefix(line, "---") ||
-			strings.Contains(strings.ToLower(line), "photo by") ||
-			strings.Contains(strings.ToLower(line), "image") ||
-			(i > 0 && i < 5 && strings.TrimSpace(line) == "")) {
-
-			result = append(result, "", imageMarkdown, "")
-			imageInserted = true
-		}
-	}
-
-	if !imageInserted && imageMarkdown != "" {
-		titleEndIndex := -1
-		for i, line := range lines {
-			if strings.HasPrefix(line, "#") {
-				titleEndIndex = i
-				break
-			}
-		}
-
-		if titleEndIndex >= 0 && titleEndIndex < len(result)-1 {
-			insertIndex := titleEndIndex + 1
-			newResult := make([]string, 0, len(result)+3)
-			newResult = append(newResult, result[:insertIndex]...)
-			newResult = append(newResult, "", imageMarkdown, "")
-			newResult = append(newResult, result[insertIndex:]...)
-			result = newResult
-		}
-	}
-
-	return strings.Join(result, "\n")
-}
-
-func replaceContentIDs(content string, contentIDMap map[string]string) string {
-	for contentID, url := range contentIDMap {
-		content = strings.ReplaceAll(content, "cid:"+contentID, url)
-	}
-	return content
 }
