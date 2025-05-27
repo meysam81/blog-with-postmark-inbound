@@ -75,3 +75,18 @@ func (r *redisFilestore) Load(filename string) (string, error) {
 
 	return content, nil
 }
+
+func (r *redisFilestore) LoadBytes(filename string) ([]byte, error) {
+	key := fmt.Sprintf("filestore:attachment:%s", filename)
+
+	ctx := context.Background()
+	content, err := r.client.Get(ctx, key).Bytes()
+	if err != nil {
+		if err == redis.Nil {
+			return nil, fmt.Errorf("file not found: %s", filename)
+		}
+		return nil, fmt.Errorf("failed to load file from Redis: %w", err)
+	}
+
+	return content, nil
+}
