@@ -7,7 +7,7 @@ import (
 )
 
 type Filestore interface {
-	Save(data []byte, ext string) (string, error)
+	Save(filename string, data []byte) error
 	Load(filename string) (string, error)
 }
 

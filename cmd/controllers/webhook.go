@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/meysam81/tarzan/cmd/metrics"
 	"github.com/meysam81/tarzan/cmd/models"
 )
@@ -80,7 +81,9 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
-			filename, err := a.Filestore.Save(data, ext)
+			filename := uuid.New().String() + ext
+
+			err = a.Filestore.Save(filename, data)
 			if err != nil {
 				log.Println("Failed saving attachment:", err)
 				continue
