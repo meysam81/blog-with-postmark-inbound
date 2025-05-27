@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/google/uuid"
 	"github.com/meysam81/tarzan/cmd/config"
 	"github.com/meysam81/tarzan/cmd/filestore"
 )
@@ -21,15 +20,14 @@ func (*Builder) NewFilestore(ctx context.Context, cfg *config.Config) (filestore
 	return fs, nil
 }
 
-func (fs *fileSystem) Save(data []byte, ext string) (string, error) {
-	filename := uuid.New().String() + ext
+func (fs *fileSystem) Save(filename string, data []byte) error {
 	filepath := filepath.Join(fs.AttachmentPath, filename)
 
 	if err := os.WriteFile(filepath, data, 0644); err != nil {
-		return "", nil
+		return err
 	}
 
-	return filename, nil
+	return nil
 }
 func (fs *fileSystem) Load(filename string) (string, error) {
 	path := filepath.Join(fs.AttachmentPath, filename)
