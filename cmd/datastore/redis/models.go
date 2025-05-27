@@ -5,7 +5,8 @@ import (
 )
 
 type redisClient struct {
-	r *redis.Client
+	r                *redis.Client
+	cspCiolationsKey string
 }
 
 type Builder struct{}

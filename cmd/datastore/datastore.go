@@ -12,6 +12,7 @@ type Datastore interface {
 	FetchPost(context.Context, int, ...func(*models.Post)) (*models.Post, error)
 	InsertEmail(context.Context, *models.EmailInsertDB) error
 	FindAuthorizedSenderByEmail(ctx context.Context, email string) (*models.AuthorizedSender, error)
+	InsertCSPViolation(context.Context, *models.CSPViolationInsertDB) error
 	Close() error
 }
 

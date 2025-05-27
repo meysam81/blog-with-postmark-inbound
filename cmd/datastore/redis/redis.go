@@ -28,5 +28,5 @@ func newRedis(cfg *config.Config) *redisClient {
 		}
 	}
 
-	return &redisClient{r: redis.NewClient(opts)}
+	return &redisClient{r: redis.NewClient(opts), cspCiolationsKey: "csp_violations"}
 }
