@@ -8,9 +8,10 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/meysam81/tarzan/cmd/config"
+	"github.com/meysam81/tarzan/cmd/filestore"
 )
 
-func (*Builder) NewFilestore(ctx context.Context, cfg *config.Config) (*fileSystem, error) {
+func (*Builder) NewFilestore(ctx context.Context, cfg *config.Config) (filestore.Filestore, error) {
 	attachmentPath := filepath.Join(cfg.StoragePath, "attachments")
 	fs := &fileSystem{AttachmentPath: attachmentPath}
 	err := fs.runMigrations()
@@ -20,12 +21,7 @@ func (*Builder) NewFilestore(ctx context.Context, cfg *config.Config) (*fileSyst
 	return fs, nil
 }
 
-func (fs *fileSystem) Save(content, ext string) (string, error) {
-	data, err := base64.StdEncoding.DecodeString(content)
-	if err != nil {
-		return "", nil
-	}
-
+func (fs *fileSystem) Save(data []byte, ext string) (string, error) {
 	filename := uuid.New().String() + ext
 	filepath := filepath.Join(fs.AttachmentPath, filename)
 

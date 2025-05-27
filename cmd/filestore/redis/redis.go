@@ -50,14 +50,14 @@ func (r *redisFilestore) runMigrations(ctx context.Context) error {
 	return nil
 }
 
-func (r *redisFilestore) Save(content, ext string) (string, error) {
+func (r *redisFilestore) Save(data []byte, ext string) (string, error) {
 
 	filename := uuid.New().String() + ext
 
 	key := fmt.Sprintf("filestore:attachment:%s", filename)
 
 	ctx := context.Background()
-	if err := r.client.Set(ctx, key, content, 0).Err(); err != nil {
+	if err := r.client.Set(ctx, key, data, 0).Err(); err != nil {
 		return "", fmt.Errorf("failed to save file to Redis: %w", err)
 	}
 

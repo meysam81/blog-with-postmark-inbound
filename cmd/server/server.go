@@ -22,7 +22,9 @@ import (
 	"github.com/meysam81/tarzan/cmd/datastore"
 	"github.com/meysam81/tarzan/cmd/datastore/redis"
 	"github.com/meysam81/tarzan/cmd/datastore/sqlite"
+	"github.com/meysam81/tarzan/cmd/filestore"
 	"github.com/meysam81/tarzan/cmd/filestore/filesystem"
+	redisFilestore "github.com/meysam81/tarzan/cmd/filestore/redis"
 	mw "github.com/meysam81/tarzan/cmd/middleware"
 )
 
@@ -53,7 +55,11 @@ func Main(frontend embed.FS) {
 		"sqlite": &sqlite.Builder{},
 		"redis":  &redis.Builder{},
 	}[cfg.DataStore]
-	filesystemBuilder := &filesystem.Builder{}
+
+	filesystemBuilder := map[string]filestore.BuildFilestore{
+		"filesystem": &filesystem.Builder{},
+		"redis":      &redisFilestore.Builder{},
+	}[cfg.FileStore]
 
 	ds, err := datastoreBuilder.NewDatastore(ctxT, cfg)
 	if err != nil {
