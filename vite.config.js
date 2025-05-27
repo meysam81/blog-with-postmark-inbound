@@ -94,11 +94,6 @@ export default defineConfig(function configureVite({ mode, command }) {
       alias: {
         "@": path.resolve(__dirname, "./src"),
         "~": path.resolve(__dirname, "./src"),
-        "@components": path.resolve(__dirname, "./src/components"),
-        "@assets": path.resolve(__dirname, "./src/assets"),
-        "@utils": path.resolve(__dirname, "./src/utils"),
-        "@stores": path.resolve(__dirname, "./src/stores"),
-        "@views": path.resolve(__dirname, "./src/views"),
       },
     },
     css: {
