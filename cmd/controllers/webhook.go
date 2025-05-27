@@ -55,13 +55,9 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var content string
-	content = email.TextBody
-	if content != "" {
-		if isMarkdown(content) {
-			content = convertMarkdownToHtml(content)
-		}
-	} else {
-		content = email.HtmlBody
+	content = email.HtmlBody
+	if content == "" {
+		content = email.TextBody
 	}
 
 	contentIDMap := make(map[string]string)
