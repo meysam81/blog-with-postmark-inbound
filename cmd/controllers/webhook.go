@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"io"
 	"log"
@@ -73,7 +74,13 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 				ext = ".jpg"
 			}
 
-			filename, err := a.Filestore.Save(att.Content, ext)
+			data, err := base64.StdEncoding.DecodeString(att.Content)
+			if err != nil {
+				log.Println("Failed decoding base64 content:", err)
+				continue
+			}
+
+			filename, err := a.Filestore.Save(data, ext)
 			if err != nil {
 				log.Println("Failed saving attachment:", err)
 				continue

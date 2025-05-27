@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/v2"
@@ -21,6 +22,7 @@ type cfg struct {
 	RedisSSL      bool   `koanf:"redis.ssl"`
 
 	DataStore string `koanf:"datastore"`
+	FileStore string `koanf:"filestore"`
 
 	DbPath      string `koanf:"dir.db"`
 	StoragePath string `koanf:"dir.storage"`
@@ -40,8 +42,18 @@ type cfg struct {
 type Config = cfg
 
 func (c *cfg) validate() error {
+	errors := []string{}
+
 	if c.DataStore != "sqlite" && c.DataStore != "redis" {
-		return fmt.Errorf("invalid datastore: %s, must be either 'sqlite' or 'redis'", c.DataStore)
+		errors = append(errors, fmt.Sprintf("invalid datastore: %s, must be either 'sqlite' or 'redis'", c.DataStore))
+	}
+
+	if c.FileStore != "filesystem" && c.FileStore != "redis" {
+		errors = append(errors, fmt.Sprintf("invalid filestore: %s, must be either 'filesystem' or 'redis'", c.FileStore))
+	}
+
+	if len(errors) > 0 {
+		return fmt.Errorf("%s", strings.Join(errors, "\n"))
 	}
 	return nil
 }
@@ -65,6 +77,7 @@ func NewConfig() (*Config, error) {
 		"dir.storage":                    "storage",
 		"dangerously-accept-all-senders": false,
 		"datastore":                      "sqlite",
+		"filestore":                      "filesystem",
 		"endpoints.rss":                  "/rss.xml",
 		"metrics.enabled":                true,
 		"metrics.auth.enabled":           false,
