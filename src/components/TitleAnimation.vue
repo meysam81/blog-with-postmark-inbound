@@ -2,43 +2,26 @@
   <div
     class="title-animation"
     ref="titleElement"
-    :aria-label="titleText"
+    aria-label="transforming-title"
     role="heading"
     aria-level="2"
   >
-    <div class="title-text" v-html="wrappedTitle"></div>
     <div class="title-decoration">
       <div class="sparkle sparkle-1" aria-hidden="true">✨</div>
       <div class="sparkle sparkle-2" aria-hidden="true">✨</div>
       <div class="sparkle sparkle-3" aria-hidden="true">✨</div>
     </div>
-    <span class="sr-only">{{ titleText }}</span>
   </div>
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, } from 'vue'
 
 export default {
   name: 'TitleAnimation',
   setup() {
     var titleElement = ref(null)
-    var titleText = "Transforming Your Emails into Blogs!"
     var isAnimated = ref(false)
-
-    var wrappedTitle = computed(function computeWrappedTitle() {
-      var wrapped = ""
-      for (var i = 0; i < titleText.length; i++) {
-        var char = titleText[i]
-        var delay = i * 0.01
-        if (char === " ") {
-          wrapped += `<span class="char-hover char-space" style="animation-delay: ${delay}s"> </span>`
-        } else {
-          wrapped += `<span class="char-hover" style="animation-delay: ${delay}s">${char}</span>`
-        }
-      }
-      return wrapped
-    })
 
     function startAnimation() {
       if (!titleElement.value) {return}
@@ -52,8 +35,6 @@ export default {
 
     return {
       titleElement,
-      titleText,
-      wrappedTitle,
       isAnimated
     }
   }
