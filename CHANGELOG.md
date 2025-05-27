@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/meysam81/tarzan/compare/v1.0.0...v1.0.1) (2025-05-27)
+
+
+### Bug Fixes
+
+* **CI:** build and publish compiled binaries to github assets ([e07e552](https://github.com/meysam81/tarzan/commit/e07e552d05be45d63c70f6bf9de48dd7eb40ee96))
+
 ## 1.0.0 (2025-05-27)
 
 
