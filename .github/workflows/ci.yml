@@ -147,7 +147,9 @@ jobs:
         run: bun install
       - name: Build frontend
         run: bun run build
-      - name: Run goreleaser
+      - env:
+          GITHUB_TOKEN: ${{ github.token }}
+        name: Run goreleaser
         run: goreleaser release --release-notes CHANGELOG.md --clean
       - name: Build docker
         uses: meysam81/build-docker@main
