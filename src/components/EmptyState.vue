@@ -46,12 +46,12 @@
       <!-- Text Content -->
       <div class="text-content">
         <h2 class="empty-title">
-          <span class="title-primary">No Blog Posts Yet</span>
-          <span class="title-secondary">Start Publishing with a Single Email</span>
+          <span class="title-primary">Send Email, Get Blog Post</span>
+          <span class="title-secondary">It's That Simple</span>
         </h2>
 
         <p class="empty-description">
-          Transform any email into a beautiful blog post instantly. Send an email to our blog address and watch your content go live in seconds—no complex setup required.
+          Email our address and your content goes live instantly. No accounts, no setup, no complexity. Just email to blog publishing.
         </p>
 
         <!-- Action Buttons -->
@@ -86,7 +86,7 @@
     <div class="cta-footer">
       <div class="cta-content">
         <p class="cta-text">
-          Ready to publish your first post? Send an email and see the magic happen ✨
+          Ready to try email-to-blog publishing? Send an email and see your words go live instantly ✨
         </p>
       </div>
     </div>

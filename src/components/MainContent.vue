@@ -17,19 +17,18 @@
           <div
             class="inline-flex items-center gap-2 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-full px-6 py-2 mb-8">
             <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-            <span class="text-sm text-slate-300 font-medium">Latest Blog Posts</span>
+            <span class="text-sm text-slate-300 font-medium">Email-Powered Blog</span>
           </div>
 
           <h2 class="text-3xl md:text-5xl font-bold text-slate-100 mb-6">
-            <span class="block">Blog Posts From</span>
+            <span class="block">Real Posts</span>
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-blue-300">
-              Email
+              from Real Emails
             </span>
           </h2>
 
           <p class="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Experience the magic of email-powered blogging. Each post below was created by simply sending an email—no
-            complex interfaces or setup required.
+            Every post below started as an email. Someone wrote it, hit send, and it went live instantly.
           </p>
         </div>
 
@@ -93,17 +92,16 @@
         <div v-if="posts.length > 0" class="text-center mt-20">
           <div class="max-w-3xl mx-auto">
             <h3 class="text-2xl md:text-3xl font-bold text-slate-100 mb-6">
-              Ready to Try It?
+              Ready to Publish?
             </h3>
             <p class="text-slate-300 mb-8 leading-relaxed">
-              Send an email to our blog address and watch your post appear here instantly. No registration, no complex
-              interface—just email.
+              Send an email and watch it become a live blog post in seconds.
             </p>
             <button @click="scrollToTop"
               class="group bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-400 hover:to-blue-400 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/25"
               aria-label="Scroll to email instructions">
               <span class="flex items-center gap-2">
-                Send Your First Email
+                Send Your Email
                 <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor"
                   viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l4-4m0 0l4 4m-4-4v18">
@@ -244,7 +242,7 @@ export default {
       }
 
       reconnectAttempts.value++
-      var delay = Math.min(1000 * Math.pow(2, reconnectAttempts.value), 30000)
+      var delay = Math.min(1000 * 2 ** reconnectAttempts.value, 30000)
 
       log.info(`Scheduling WebSocket reconnection in ${delay}ms (attempt ${reconnectAttempts.value}/${maxReconnectAttempts})`)
 

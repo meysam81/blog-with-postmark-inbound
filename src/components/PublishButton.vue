@@ -36,8 +36,8 @@
           </div>
 
           <div class="btn-text">
-            <span class="btn-main-text">Start Publishing</span>
-            <span class="btn-sub-text">Send an email, get a blog post</span>
+            <span class="btn-main-text">Experience Email-to-Blog Publishing</span>
+            <span class="btn-sub-text">Send an email → Get a live blog post</span>
           </div>
 
           <div class="btn-arrow" aria-hidden="true">
@@ -92,13 +92,12 @@
               </svg>
             </div>
 
-            <div class="header-text">
-              <h3 id="publishInfoTitle" class="panel-title">
-                Email Publishing Made Simple
-              </h3>
-              <p id="publishInfoDescription" class="panel-description">
-                Transform any email into a beautiful blog post instantly. No registration required.
-              </p>
+            <div class="header-text">            <h3 id="publishInfoTitle" class="panel-title">
+              Your Email Becomes a Live Blog Post
+            </h3>
+            <p id="publishInfoDescription" class="panel-description">
+              Send an email → Get a published blog post. No signups, live updates, open source.
+            </p>
             </div>
           </header>
 
@@ -114,14 +113,13 @@
               <div class="step-content">
                 <h4 class="step-title">
                   <svg class="step-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v10a2 2 0 002 2z"/>
                   </svg>
-                  Write Your Blog Post
+                  Compose Your Email
                 </h4>
 
                 <p class="step-description">
-                  Compose your content in any email client.
-                  The subject becomes your post title, and the body becomes your content.
+                  Write in any email client. Subject = title, body = content. No special formatting or accounts needed.
                 </p>
 
                 <div class="step-highlight">
@@ -144,11 +142,11 @@
                   <svg class="step-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                   </svg>
-                  Send to Blog Address
+                  Send & Watch It Go Live
                 </h4>
 
                 <p class="step-description">
-                  Send your email to the blog address and watch your content transform into a beautiful blog post instantly.
+                  Email our address and watch your words transform into a live blog post instantly—no refresh needed.
                 </p>
 
                 <div class="email-container">

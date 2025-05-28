@@ -23,17 +23,17 @@
             </div>
             <div class="brand-info">
               <h3 class="brand-title">Tarzan</h3>
-              <p class="brand-tagline">Email to Blog Platform</p>
+              <p class="brand-tagline">Your Email Becomes a Live Blog Post</p>
             </div>
           </div>
 
           <p class="brand-description">
-            Send an email, get a blog post. No complex interfaces, no registration required.
+            Send an email → Get a published blog post. No signups, live updates, open source.
           </p>
 
           <div class="brand-motto">
             <span class="motto-icon">📧</span>
-            <span class="motto-text">Email → Blog Post. It's That Simple.</span>
+            <span class="motto-text">Email → Live Blog Post. Zero Friction.</span>
           </div>
         </div>
 
@@ -151,7 +151,7 @@ export default {
   setup() {
     var currentYear = ref(new Date().getFullYear())
 
-    onMounted(function() {
+    onMounted(function updateCurrentYear() {
       currentYear.value = new Date().getFullYear()
     })
 

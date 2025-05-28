@@ -17,7 +17,7 @@
           <div class="flex items-center justify-center gap-4 mb-6">
             <div class="h-px bg-gradient-to-r from-transparent via-slate-400 to-transparent flex-1 max-w-32"></div>
             <p class="text-lg md:text-xl text-slate-300 font-light tracking-wider uppercase">
-              Email Publishing Platform
+              Email-to-Blog Publishing
             </p>
             <div class="h-px bg-gradient-to-r from-transparent via-slate-400 to-transparent flex-1 max-w-32"></div>
           </div>
@@ -26,26 +26,26 @@
         <!-- Main Tagline -->
         <div class="mb-12">
           <h2 class="text-2xl md:text-4xl lg:text-5xl font-bold text-slate-100 leading-tight mb-6">
-            <span class="block">Write an Email,</span>
+            <span class="block">Email</span>
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-cyan-300 font-black drop-shadow-sm">
-              Publish a Blog Post
+              Becomes Blog
             </span>
-            <span class="block text-xl md:text-2xl lg:text-3xl text-slate-300 font-normal mt-2">Instantly. No signup required.</span>
+            <span class="block text-xl md:text-2xl lg:text-3xl text-slate-300 font-normal mt-2">Hit send. Post goes live.</span>
           </h2>
 
           <p class="text-lg md:text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto mb-8">
-            Transform any email into a live blog post. Send to our address, watch it appear in real-time—no page refresh needed.
+            Send email. Get blog post. That's it. No accounts, no setup, no complexity.
           </p>
 
           <!-- Real-time Feature Highlight -->
           <div class="bg-gradient-to-r from-blue-900/40 to-purple-900/40 backdrop-blur-sm border border-blue-500/30 rounded-xl p-4 mb-8 max-w-xl mx-auto">
             <div class="flex items-center justify-center gap-2 mb-2">
               <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-              <span class="text-blue-300 font-semibold text-sm">LIVE UPDATES</span>
+              <span class="text-blue-300 font-semibold text-sm">INSTANT PUBLISHING</span>
               <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
             </div>
             <p class="text-slate-200 text-sm">
-              Watch your blog post appear instantly via real-time WebSocket connection
+              Email goes out, blog post goes live. Watch it happen in real time.
             </p>
           </div>
 
@@ -57,13 +57,23 @@
           >
             <div class="flex items-center justify-center gap-3 mb-4">
               <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <h3 class="text-lg font-semibold text-emerald-300">How It Works</h3>
+              <h3 class="text-lg font-semibold text-emerald-300">Start Publishing</h3>
               <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
             </div>
 
             <p class="text-slate-200 mb-4 leading-relaxed">
-              Email <strong class="text-emerald-300 font-mono text-lg">{{ emailAddress }}</strong> with your content. Your blog post goes live immediately and appears below.
+              Email <strong class="text-emerald-300 font-mono text-lg">{{ emailAddress }}</strong> and your post goes live instantly.
             </p>
+
+            <div class="bg-slate-800/40 border border-slate-600/30 rounded-lg p-3 mb-4">
+              <div class="flex items-center gap-2 mb-1">
+                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span class="text-blue-300 text-sm font-medium">Markdown Ready</span>
+              </div>
+              <p class="text-slate-300 text-sm">Use **bold**, *italic*, # headers for rich formatting</p>
+            </div>
 
             <div class="flex items-center justify-center gap-2 relative">
               <button
@@ -73,7 +83,7 @@
                   'success-pulse': emailCopied
                 }"
                 class="group inline-flex items-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:scale-105 relative overflow-hidden"
-                :aria-label="emailCopied ? 'Email address copied!' : 'Copy email address'"
+                :aria-label="emailCopied ? 'Email copied!' : 'Copy email'"
               >
                 <svg v-if="!emailCopied" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
@@ -81,7 +91,7 @@
                 <svg v-else class="w-4 h-4 transition-all duration-200 scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
-                <span class="transition-all duration-200">{{ emailCopied ? 'Copied!' : 'Copy Email Address' }}</span>
+                <span class="transition-all duration-200">{{ emailCopied ? 'Copied!' : 'Copy Email' }}</span>
 
                 <!-- Success ripple effect -->
                 <div v-if="emailCopied" class="absolute inset-0 bg-emerald-400/30 rounded-lg animate-ping"></div>
@@ -92,7 +102,7 @@
                 v-if="emailCopied"
                 class="email-copy-tooltip"
               >
-                ✓ Email address copied!
+                ✓ Email copied!
                 <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-emerald-900/90 border-l border-t border-emerald-500/50 rotate-45"></div>
               </div>
             </div>
@@ -106,8 +116,8 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7"></path>
                 </svg>
               </div>
-              <h3 class="font-semibold text-slate-200 mb-1">Instant Publishing</h3>
-              <p class="text-slate-400 text-xs">From email send to live blog post in seconds, no refresh needed.</p>
+              <h3 class="font-semibold text-slate-200 mb-1">Email to Web</h3>
+              <p class="text-slate-400 text-xs">Send email, get live blog post in seconds</p>
             </div>
 
             <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4">
@@ -116,32 +126,31 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 109.75 9.75A9.75 9.75 0 0012 2.25z"></path>
                 </svg>
               </div>
-              <h3 class="font-semibold text-slate-200 mb-1">Zero Friction</h3>
-              <p class="text-slate-400 text-xs">No registration, no login, no forms. Just send an email and publish.</p>
+              <h3 class="font-semibold text-slate-200 mb-1">Zero Setup</h3>
+              <p class="text-slate-400 text-xs">No accounts. No dashboards. Just email.</p>
             </div>
 
             <div class="bg-slate-800/30 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4">
               <div class="text-purple-400 mb-2">
                 <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                 </svg>
               </div>
-              <h3 class="font-semibold text-slate-200 mb-1">Real-time Updates</h3>
-              <p class="text-slate-400 text-xs">Live WebSocket connection shows new posts instantly.</p>
+              <h3 class="font-semibold text-slate-200 mb-1">Your Control</h3>
+              <p class="text-slate-400 text-xs">Open source. Self-host anywhere.</p>
             </div>
           </div>
         </div>
 
         <!-- Navigation Actions -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <GitHubLink />
-          <button
+          <GitHubLink />            <button
             @click="scrollToContent"
             class="group bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-400 hover:to-blue-400 text-white font-semibold px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/25"
             aria-label="View published blog posts"
           >
             <span class="flex items-center gap-2">
-              View Live Blog Posts
+              See Live Blog Posts
               <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
               </svg>
@@ -201,7 +210,7 @@ export default {
         var announcement = document.createElement("div")
         announcement.setAttribute("aria-live", "polite")
         announcement.className = "sr-only"
-        announcement.textContent = "Email address copied to clipboard"
+        announcement.textContent = "Email copied to clipboard"
         document.body.appendChild(announcement)
 
         setTimeout(function removeAnnouncement() {
