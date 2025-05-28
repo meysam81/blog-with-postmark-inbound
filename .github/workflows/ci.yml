@@ -49,11 +49,13 @@ jobs:
         run: go mod tidy
       - name: Create dummy frontend
         run: |
-          mkdir dist
-          touch dist/index.html
+            mkdir dist
+            touch dist/index.html
       - name: Build the server
         run: go build -o tarzan
-      - name: Run server in background
+      - env:
+          TARZAN_DANGEROUSLY__ACCEPT__ALL__SENDERS: 'true'
+        name: Run server in background
         run: nohup ./tarzan > server.log 2>&1 &
       - name: Run e2e tests
         run: hurl e2e/*.hurl --test --retry 20 --variables-file e2e/ci.vars
