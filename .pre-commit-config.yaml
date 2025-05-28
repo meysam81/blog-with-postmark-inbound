@@ -86,3 +86,15 @@ repos:
       - id: dockerfmt
         args:
           - --indent=4
+  - repo: local
+    hooks:
+      - id: update-env-example
+        name: update-env-example
+        language: system
+        entry: go run ./internal/update-env-example/main.go
+        pass_filenames: false
+        files: ^.*cmd/config/config.go$
+        require_serial: false
+        types_or:
+          - file
+          - text
