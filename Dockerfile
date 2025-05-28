@@ -7,7 +7,10 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=cache,target=/root/.bun \
     bun install
 
-ENV VITE_WEBSOCKET_URL=wss://tarzan.meysam.io/ws
+ARG VITE_WEBSOCKET_URL \
+    VITE_INBOUND_EMAIL_ADDRESS
+ENV VITE_WEBSOCKET_URL=${VITE_WEBSOCKET_URL} \
+    VITE_INBOUND_EMAIL_ADDRESS=${VITE_INBOUND_EMAIL_ADDRESS}
 
 COPY . .
 RUN --mount=type=cache,target=/root/.bun \
