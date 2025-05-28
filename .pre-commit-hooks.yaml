@@ -1,0 +1,15 @@
+---
+- additional_dependencies:
+    - ./internal/update-env-example
+  alias: update-env-example
+  description: Update .env.example
+  entry: update-env-example
+  files: ^.*cmd/config/config.go$
+  id: update-env-example
+  language: golang
+  name: update-env-example
+  pass_filenames: false
+  require_serial: false
+  types_or:
+    - file
+    - text
