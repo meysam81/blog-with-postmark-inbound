@@ -146,9 +146,10 @@ func parseValue(expr ast.Expr) interface{} {
 			return v.Value
 		}
 	case *ast.Ident:
-		if v.Name == "true" {
+		switch v.Name {
+		case "true":
 			return true
-		} else if v.Name == "false" {
+		case "false":
 			return false
 		}
 	}
