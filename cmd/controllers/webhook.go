@@ -12,6 +12,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/meysam81/tarzan/cmd/metrics"
 	"github.com/meysam81/tarzan/cmd/models"
+	"github.com/russross/blackfriday/v2"
 )
 
 func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
@@ -59,9 +60,10 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var content string
-	content = email.HtmlBody
-	if content == "" {
-		content = email.TextBody
+	if email.TextBody != "" && isMarkdown(email.TextBody) {
+		content = convertMarkdownToHtml(email.TextBody)
+	} else {
+		content = email.HtmlBody
 	}
 
 	contentIDMap := make(map[string]string)
@@ -110,9 +112,36 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println("Notifying the signal for updated list...")
-	*a.Signal <- 1
+	select {
+	case *a.Signal <- 1:
+		log.Println("Signal sent successfully")
+	case <-time.After(100 * time.Millisecond):
+		log.Println("Signal send timed out - no receiver available")
+	}
 
 	metrics.IncrementPostsTotal()
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func convertMarkdownToHtml(content string) string {
+	renderer := blackfriday.NewHTMLRenderer(blackfriday.HTMLRendererParameters{
+		Flags: blackfriday.CommonHTMLFlags | blackfriday.HrefTargetBlank,
+	})
+
+	extensions := blackfriday.CommonExtensions | blackfriday.AutoHeadingIDs
+	htmlContent := blackfriday.Run([]byte(content), blackfriday.WithRenderer(renderer), blackfriday.WithExtensions(extensions))
+	content = string(htmlContent)
+
+	return content
+}
+
+func isMarkdown(content string) bool {
+	markdownIndicators := []string{"#", "*", "_", "`", "[", "](", "```"}
+	for _, indicator := range markdownIndicators {
+		if strings.Contains(content, indicator) {
+			return true
+		}
+	}
+	return false
 }
