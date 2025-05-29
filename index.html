@@ -79,6 +79,71 @@
       href="/rss.xml"
     />
 
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Tarzan",
+      "alternateName": "Email to Blog in Seconds",
+      "url": "https://tarzan.meysam.io",
+      "description": "Send an email. Get a live blog post. No signups required. Open source, self-hostable, with real-time updates.",
+      "applicationCategory": "BloggingPlatform",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Meysam Azad",
+        "url": "https://github.com/meysam81"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Tarzan",
+        "url": "https://tarzan.meysam.io"
+      },
+      "sameAs": [
+        "https://github.com/meysam81/tarzan"
+      ],
+      "featureList": [
+        "Email to blog publishing",
+        "No signup required",
+        "Open source",
+        "Self-hostable",
+        "Real-time updates",
+        "RSS feeds"
+      ]
+    }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Tarzan",
+      "url": "https://tarzan.meysam.io",
+      "logo": "https://tarzan.meysam.io/favicon.png",
+      "description": "Open source email-to-blog platform that converts emails into live blog posts instantly",
+      "foundingDate": "2025",
+      "founder": {
+        "@type": "Person",
+        "name": "Meysam Azad"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "technical support",
+        "url": "https://github.com/meysam81/tarzan/issues"
+      },
+      "sameAs": [
+        "https://github.com/meysam81/tarzan"
+      ]
+    }
+    </script>
+
     <!-- Sitemap -->
     <link
       rel="sitemap"
