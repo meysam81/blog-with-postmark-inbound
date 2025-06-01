@@ -41,7 +41,7 @@ func (a *AppState) SitemapHandler(w http.ResponseWriter, r *http.Request) {
 		URLs: []URL{
 			{
 				Loc:        baseURL,
-				LastMod:    time.Now().Format("2006-01-02"),
+				LastMod:    time.Now().Format(time.DateOnly),
 				ChangeFreq: "daily",
 				Priority:   "1.0",
 			},
@@ -50,10 +50,10 @@ func (a *AppState) SitemapHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, post := range *posts {
 		lastMod := ""
-		if parsedTime, err := time.Parse("2006-01-02 15:04:05", post.CreatedAt); err == nil {
-			lastMod = parsedTime.Format("2006-01-02")
+		if parsedTime, err := time.Parse(time.DateTime, post.CreatedAt); err == nil {
+			lastMod = parsedTime.Format(time.DateOnly)
 		} else if parsedTime, err := time.Parse(time.RFC3339, post.CreatedAt); err == nil {
-			lastMod = parsedTime.Format("2006-01-02")
+			lastMod = parsedTime.Format(time.DateOnly)
 		}
 
 		postURL := URL{
