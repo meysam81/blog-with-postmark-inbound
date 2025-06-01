@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.1.0](https://github.com/meysam81/tarzan/compare/v1.0.2...v1.1.0) (2025-06-01)
+
+
+### Features
+
+* bring back the markdown support, no image though! ([f0bd113](https://github.com/meysam81/tarzan/commit/f0bd11377a2f832e467e1e8ebbeecf29f479249b))
+* **build:** add hook for updating env example ([01986bf](https://github.com/meysam81/tarzan/commit/01986bf745a0cc2c91e517ed9095e70bc2bae9ff))
+* **build:** create a production ready vite ([#5](https://github.com/meysam81/tarzan/issues/5)) ([65fa261](https://github.com/meysam81/tarzan/commit/65fa2619c712858fa0654b08ee40532641c99780))
+* **build:** remove hardcoded URL to make the docker image portable ([c8bee63](https://github.com/meysam81/tarzan/commit/c8bee633409046fe64e2a3702fbed1607b833292))
+* **build:** update env example on every commit ([7ebfacd](https://github.com/meysam81/tarzan/commit/7ebfacd8f2ac6029aeb9e9a2f8414a81dbe375f8))
+* create 404 not found page ([cfe968c](https://github.com/meysam81/tarzan/commit/cfe968c5d502c5734e9fb49a777d8d8a8d51c765))
+* improve SEO score of the landing page ([6ab0131](https://github.com/meysam81/tarzan/commit/6ab0131192b4a3164b22842186522a1d59dd6e04))
+* improve the copy further, simplifying the language ([1a842ed](https://github.com/meysam81/tarzan/commit/1a842ed2e313e0e8a68c84a649cb03cd599774a7))
+* increase SEO score to 100 :) ([2049ee8](https://github.com/meysam81/tarzan/commit/2049ee81063c94f3758428e53db031678ec1d129))
+* record and persist CSP violations for later audit and troubleshooting ([75674c0](https://github.com/meysam81/tarzan/commit/75674c0275bbc28f48e042f323facb6c83f94a3d))
+* save the webhook payload for later audit ([d1e9946](https://github.com/meysam81/tarzan/commit/d1e9946ab8496977867d013d859ab281e2820d8c))
+
+
+### Bug Fixes
+
+* add data to image source ([65bfb1a](https://github.com/meysam81/tarzan/commit/65bfb1a4b5a14e484b205c34ba94b93dd0d712d1))
+* add the font and connect to CSP Header ([46b314e](https://github.com/meysam81/tarzan/commit/46b314e6561a5bf29a4f4d4d871d2e419d17a6b7))
+* **build:** do not update go.sum on build ([87c7299](https://github.com/meysam81/tarzan/commit/87c7299dda35422f5e9211973448816e4d233387))
+* **CI:** add gitkeep to dist ([3a548d8](https://github.com/meysam81/tarzan/commit/3a548d89c13e04b80c3e777739dbc8855e2a7f1e))
+* **CI:** create dist in the job ([78dd411](https://github.com/meysam81/tarzan/commit/78dd4112e084221f07d97bf5cf9d66505784f38d))
+* **CI:** make linter happy ([6151b12](https://github.com/meysam81/tarzan/commit/6151b12fa5fa349105f344d0ff3a5b6ff6a58df9))
+* **CI:** make linter happy ([9b6b93b](https://github.com/meysam81/tarzan/commit/9b6b93b07872a30acfc75115ac2ae1291be208f3))
+* **CI:** pass the e2e tests ([f0abcb5](https://github.com/meysam81/tarzan/commit/f0abcb5175d335b7c1efde76fcef826fcf1eceeb))
+* **e2e:** assert 204 on webhook success ([57d6f1c](https://github.com/meysam81/tarzan/commit/57d6f1c3c54b51b9963c5d4f36c950bf5d07d333))
+* handle images with both html and text body ([b52b0e2](https://github.com/meysam81/tarzan/commit/b52b0e263a236fdde940e650aaac3e1e2f3a8622))
+* remove go back from 404 not found ([0a3549e](https://github.com/meysam81/tarzan/commit/0a3549e8e663d880a6b6722d379ba9c151115c28))
+* serve the attachments from its own handler ([7bd78de](https://github.com/meysam81/tarzan/commit/7bd78de90b7d37da97dbe0b0299c14db2b5b356e))
+* **server:** use html body for attachment rendering ([8e364b9](https://github.com/meysam81/tarzan/commit/8e364b9e63bcdc2dc3a9868853b33599e2ac0276))
+
 ## [1.0.2](https://github.com/meysam81/tarzan/compare/v1.0.1...v1.0.2) (2025-05-27)
 
 
