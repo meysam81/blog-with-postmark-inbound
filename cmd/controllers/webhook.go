@@ -32,6 +32,9 @@ func (a *AppState) WebhookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	payloadName := strings.ReplaceAll(time.Now().Format(time.DateTime), " ", "T")
+	a.Filestore.Save(payloadName, body)
+
 	var email models.InboundEmail
 	if err := json.Unmarshal(body, &email); err != nil {
 		log.Printf("Error parsing JSON: %v", err)
