@@ -40,3 +40,5 @@ dist/*
 .lycheecache
 .DS_Store
 .goreleaser-dist
+public/rss.xml
+public/sitemap.xml
